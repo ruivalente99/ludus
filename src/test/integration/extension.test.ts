@@ -4,7 +4,7 @@ import { GameProvider } from '../../extension';
 suite('Extension Integration Tests', () => {
     vscode.window.showInformationMessage('Start integration tests.');
     test('Extension should be present', () => {
-        assert.ok(vscode.extensions.getExtension('ruivalente.com.ludus'));
+        assert.ok(vscode.extensions.getExtension('ruivalente99.ludus'));
     });
     test('GameProvider should be instantiable', () => {
         const extensionUri = vscode.Uri.file(__dirname);
