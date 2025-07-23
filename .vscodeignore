@@ -1,0 +1,33 @@
+# Source files (keep only compiled output)
+src/**
+!src/README.md
+
+# Development and build files
+.vscode/**
+tsconfig.json
+.eslintrc.json
+.mocharc.json
+.nycrc.json
+scripts/**
+
+# Dependencies and build artifacts
+node_modules/**
+out/test/**
+*.vsix
+
+# Version control
+.git/**
+.gitignore
+
+# Documentation (keep main README)
+IMPROVEMENTS.md
+
+# Testing and coverage
+coverage/**
+.nyc_output/**
+
+# Temporary files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

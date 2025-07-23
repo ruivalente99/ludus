@@ -1,0 +1,225 @@
+{
+  "name": "ludus",
+  "displayName": "Ludus",
+  "description": "Collection of classic mini-games for relaxation in VS Code sidebar. Features multiple games including Tic Tac Toe, Rock Paper Scissors, Number Merge, Paddle Ball, Block Puzzle, Galaxy Defense, Snake, Breakout, Memory Match, Wing Flap and more - all written in TypeScript for better performance and maintainability.",
+  "version": "3.0.0",
+  "publisher": "ruivalente",
+  "icon": "ludus.png",
+  "keywords": [
+    "games",
+    "entertainment",
+    "tic-tac-toe",
+    "number-merge",
+    "tetris",
+    "snake",
+    "breakout",
+    "road-crosser",
+    "memory",
+    "galaxy-defense",
+    "puzzle",
+    "relaxation",
+    "typescript",
+    "sidebar",
+    "wing-flap"
+  ],
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ludus",
+          "title": "Ludus",
+          "icon": "$(game)"
+        }
+      ]
+    },
+    "views": {
+      "ludus": [
+        {
+          "type": "webview",
+          "id": "ludusView",
+          "name": "🎮 Games",
+          "icon": "$(game)"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "ludus.openGamePanel",
+        "title": "Open Games Panel",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playTicTacToe",
+        "title": "Play Tic Tac Toe",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playRockPaperScissors",
+        "title": "Play Rock Paper Scissors",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playNumberMerge",
+        "title": "Play Number Merge",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playPaddleBall",
+        "title": "Play Paddle Ball",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playBlockPuzzle",
+        "title": "Play Block Puzzle",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playGalaxyDefense",
+        "title": "Play Galaxy Defense",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playSnake",
+        "title": "Play Snake",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playBreakout",
+        "title": "Play Breakout",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playMemory",
+        "title": "Play Memory Match",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playRoadCrosser",
+        "title": "Play Road Crosser",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playAsteroids",
+        "title": "Play Asteroids",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playPong",
+        "title": "Play Pong",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playMinesweeper",
+        "title": "Play Minesweeper",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.playWingFlap",
+        "title": "Play Wing Flap",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.selectTheme",
+        "title": "Select Game Theme",
+        "category": "Ludus"
+      },
+      {
+        "command": "ludus.clearFavorites",
+        "title": "Clear All Favorites",
+        "category": "Ludus"
+      }
+    ],
+    "configuration": {
+      "title": "Ludus",
+      "properties": {
+        "ludus.theme": {
+          "type": "string",
+          "default": "default",
+          "enum": [
+            "default",
+            "dark",
+            "light",
+            "matrix"
+          ],
+          "enumDescriptions": [
+            "Use VS Code's current theme",
+            "Dark theme with custom styling",
+            "Light theme with custom styling",
+            "Matrix green theme"
+          ],
+          "description": "Choose the theme for games interface"
+        },
+        "ludus.animations": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable animations in games"
+        },
+        "ludus.favorites": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "List of favorite games"
+        },
+        "ludus.soundEffects": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable sound effects (when available)"
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "ludus.openGamePanel",
+        "key": "ctrl+shift+g",
+        "mac": "cmd+shift+g",
+        "when": "!terminalFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run validate",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "test:unit": "mocha out/test/unit/**/*.test.js",
+    "test:integration": "mocha out/test/integration/**/*.test.js",
+    "coverage": "nyc npm run test:unit",
+    "clean": "rimraf out",
+    "validate": "node scripts/validate-project.js",
+    "package": "vsce package",
+    "dev": "npm run compile && npm run validate"
+  },
+  "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
+    "@types/chai": "^4.3.5",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "@vscode/test-electron": "^2.3.4",
+    "@vscode/vsce": "^2.32.0",
+    "chai": "^4.3.7",
+    "eslint": "^8.44.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "nyc": "^15.1.0",
+    "rimraf": "^3.0.2",
+    "source-map-support": "^0.5.21",
+    "ts-node": "^10.9.2",
+    "typescript": "^4.9.4"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}
