@@ -49,7 +49,6 @@ suite('Extension Integration Tests', () => {
         const extensionUri = vscode.Uri.file(__dirname);
         const provider = new GameProvider(extensionUri);
         assert.ok(typeof provider.setCurrentGame === 'function');
-        assert.ok(typeof provider.getThemeCSS === 'function');
         assert.ok(typeof provider.resolveWebviewView === 'function');
     });
 });

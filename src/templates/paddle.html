@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" class="{{themeClass}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paddle Ball</title>
+    {{commonCSS}}
+    {{themeCSS}}
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="backToPaddleMenu()">← Back</button>
+        {{#showNewWindowBtn}}
+        <button class="new-window-btn" onclick="openInNewWindow('paddle')">🗗 New Window</button>
+        {{/showNewWindowBtn}}
+    </div>
+    <h1>🏓 Paddle Ball</h1>
+    <div class="score">Score: <span id="score">0</span></div>
+    <canvas id="gameCanvas" width="400" height="300"></canvas>
+    <div class="controls">
+        <button onclick="startGame()">Start Game</button>
+        <button onclick="resetPaddleGame()">Reset</button>
+    </div>
+    <div class="instructions">
+        <p>Use mouse or A/D keys to move paddle</p>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        function openInNewWindow(game) {
+            vscode.postMessage({
+                type: 'openInNewWindow',
+                game: game
+            });
+        }
+        
+        function backToPaddleMenu() {
+            vscode.postMessage({
+                type: 'backToMenu'
+            });
+        }
+        window.vscode = vscode;
+    </script>
+    <script src="{{gameScript:paddle}}"></script>
+</body>
+</html>

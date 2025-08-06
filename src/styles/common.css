@@ -1,0 +1,276 @@
+/* Common Minimalist Styles for Ludus Games */
+
+body {
+    font-family: var(--vscode-font-family);
+    color: var(--vscode-foreground);
+    background: var(--vscode-editor-background);
+    padding: 16px;
+    margin: 0;
+    text-align: center;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0 0 16px 0;
+    color: var(--vscode-foreground);
+    border-bottom: 1px solid var(--vscode-input-border);
+    padding-bottom: 8px;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.back-btn, .new-window-btn {
+    background: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    border: none;
+    border-radius: 3px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.2s ease;
+}
+
+.back-btn:hover, .new-window-btn:hover {
+    background: var(--vscode-button-secondaryHoverBackground);
+}
+
+.new-window-btn {
+    background: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+}
+
+.new-window-btn:hover {
+    background: var(--vscode-button-hoverBackground);
+}
+
+/* Buttons */
+button {
+    background: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border: none;
+    border-radius: 3px;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin: 4px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    min-width: 60px;
+}
+
+button:hover {
+    background: var(--vscode-button-hoverBackground);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Game Canvas */
+#gameCanvas {
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 4px;
+    margin: 16px auto;
+    display: block;
+}
+
+/* Score and Status */
+.score {
+    font-weight: 500;
+    margin: 8px 0;
+    font-size: 16px;
+    color: var(--vscode-charts-blue);
+}
+
+.status {
+    margin: 16px 0;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.best-score {
+    font-size: 14px;
+    color: var(--vscode-charts-green);
+    margin: 4px 0;
+}
+
+/* Stats and Info */
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 16px 0;
+    padding: 12px;
+    background: var(--vscode-input-background);
+    border-radius: 4px;
+    border: 1px solid var(--vscode-input-border);
+}
+
+.stat {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.scoreboard {
+    margin: 16px 0;
+    padding: 16px;
+    background: var(--vscode-input-background);
+    border-radius: 4px;
+    border: 1px solid var(--vscode-input-border);
+    text-align: left;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.score-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+/* Controls */
+.controls {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Instructions */
+.instructions {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 12px;
+    color: var(--vscode-descriptionForeground);
+    line-height: 1.4;
+}
+
+.instructions p {
+    margin: 3px 0;
+}
+
+/* Game Over */
+.game-over {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--vscode-input-background);
+    color: var(--vscode-foreground);
+    padding: 24px;
+    border-radius: 6px;
+    border: 1px solid var(--vscode-input-border);
+    text-align: center;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    min-width: 200px;
+}
+
+.game-over h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: var(--vscode-foreground);
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Form Elements */
+input, select {
+    background: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 3px;
+    padding: 6px 8px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--vscode-focusBorder);
+}
+
+/* Grid Layouts */
+.grid {
+    display: grid;
+    gap: 8px;
+    margin: 16px auto;
+    justify-content: center;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.2s ease-out;
+}
+
+.pulse {
+    animation: pulse 0.8s ease-in-out;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    body {
+        padding: 12px;
+    }
+    
+    .header {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+    }
+    
+    .controls {
+        gap: 6px;
+    }
+    
+    button {
+        padding: 6px 12px;
+        font-size: 13px;
+        min-width: 50px;
+    }
+    
+    .stats {
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    h1 {
+        font-size: 18px;
+    }
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.mb-8 { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }

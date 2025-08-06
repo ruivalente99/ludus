@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" class="{{themeClass}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Crosser</title>
+    {{commonCSS}}
+    {{themeCSS}}
+    <style>
+        #gameCanvas {
+            background: linear-gradient(to bottom, #87CEEB, #90EE90, #8FBC8F);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="backToFroggerMenu()">← Back</button>
+        {{#showNewWindowBtn}}
+        <button class="new-window-btn" onclick="openInNewWindow('frogger')">🗗 New Window</button>
+        {{/showNewWindowBtn}}
+    </div>
+    <h1>🐸 Road Crosser</h1>
+    <div class="stats">
+        <div class="stat">Score: <span id="score">0</span></div>
+        <div class="stat">Lives: <span id="lives">3</span></div>
+        <div class="stat">Level: <span id="level">1</span></div>
+    </div>
+    <canvas id="gameCanvas" width="400" height="500"></canvas>
+    <div class="controls">
+        <button onclick="startFroggerGame()">Start Game</button>
+        <button onclick="resetFroggerGame()">Reset</button>
+    </div>
+    <div class="instructions">
+        <p>Use WASD or Arrow Keys to move</p>
+        <p>Help the frog cross safely without getting hit</p>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        function openInNewWindow(game) {
+            vscode.postMessage({
+                type: 'openInNewWindow',
+                game: game
+            });
+        }
+        
+        function backToFroggerMenu() {
+            vscode.postMessage({
+                type: 'backToMenu'
+            });
+        }
+        window.vscode = vscode;
+    </script>
+    <script src="{{gameScript:frogger}}"></script>
+</body>
+</html>

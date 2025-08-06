@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" class="{{themeClass}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match</title>
+    {{commonCSS}}
+    {{themeCSS}}
+    <style>
+        #gameCanvas {
+            border: 1px solid var(--vscode-input-border);
+            border-radius: 4px;
+            margin: 16px auto;
+            display: block;
+            background: var(--vscode-input-background);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="backToMemoryMenu()">← Back</button>
+        {{#showNewWindowBtn}}
+        <button class="new-window-btn" onclick="openInNewWindow('memory')">🗗 New Window</button>
+        {{/showNewWindowBtn}}
+    </div>
+    <h1>🧠 Memory Match</h1>
+    <div class="stats">
+        <div class="stat">Moves: <span id="moves">0</span></div>
+        <div class="stat">Matches: <span id="matches">0</span></div>
+        <div class="stat">Time: <span id="time">00:00</span></div>
+    </div>
+    <canvas id="gameCanvas" width="320" height="320"></canvas>
+    <div class="controls">
+        <button onclick="startMemoryGame()">New Game</button>
+        <button onclick="resetMemoryGame()">Reset</button>
+    </div>
+    <div class="instructions">
+        <p>Click cards to flip them and find matching pairs</p>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        function openInNewWindow(game) {
+            vscode.postMessage({
+                type: 'openInNewWindow',
+                game: game
+            });
+        }
+        
+        function backToMemoryMenu() {
+            vscode.postMessage({
+                type: 'backToMenu'
+            });
+        }
+        window.vscode = vscode;
+    </script>
+    <script src="{{gameScript:memory}}"></script>
+</body>
+</html>

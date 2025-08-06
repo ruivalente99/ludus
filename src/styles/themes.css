@@ -1,0 +1,111 @@
+/* Base theme styles for Ludus extension */
+
+/* Dark Theme */
+.theme-dark {
+    --ludus-bg: #1a1a1a;
+    --ludus-fg: #e0e0e0;
+    --ludus-primary: #007acc;
+    --ludus-secondary: #2d2d30;
+    --ludus-hover: #404040;
+    --ludus-border: #3c3c3c;
+    --ludus-button-bg: #0e639c;
+    --ludus-button-hover: #1177bb;
+    --ludus-success: #4ec9b0;
+    --ludus-warning: #ffcc02;
+    --ludus-error: #f44747;
+}
+
+.theme-dark body {
+    background: var(--ludus-bg) !important;
+    color: var(--ludus-fg) !important;
+}
+
+.theme-dark .game-btn,
+.theme-dark button {
+    background: var(--ludus-button-bg) !important;
+    color: var(--ludus-fg) !important;
+    border: 1px solid var(--ludus-border) !important;
+}
+
+.theme-dark .game-btn:hover,
+.theme-dark button:hover {
+    background: var(--ludus-button-hover) !important;
+}
+
+/* Light Theme */
+.theme-light {
+    --ludus-bg: #ffffff;
+    --ludus-fg: #333333;
+    --ludus-primary: #0078d4;
+    --ludus-secondary: #f3f2f1;
+    --ludus-hover: #e1dfdd;
+    --ludus-border: #d1d1d1;
+    --ludus-button-bg: #0078d4;
+    --ludus-button-hover: #106ebe;
+    --ludus-success: #107c10;
+    --ludus-warning: #ff8c00;
+    --ludus-error: #d13438;
+}
+
+.theme-light body {
+    background: var(--ludus-bg) !important;
+    color: var(--ludus-fg) !important;
+}
+
+.theme-light .game-btn,
+.theme-light button {
+    background: var(--ludus-button-bg) !important;
+    color: #ffffff !important;
+    border: 1px solid var(--ludus-border) !important;
+}
+
+.theme-light .game-btn:hover,
+.theme-light button:hover {
+    background: var(--ludus-button-hover) !important;
+}
+
+/* Matrix Theme */
+.theme-matrix {
+    --ludus-bg: #000000;
+    --ludus-fg: #00ff00;
+    --ludus-primary: #00cc00;
+    --ludus-secondary: #001100;
+    --ludus-hover: #003300;
+    --ludus-border: #00aa00;
+    --ludus-button-bg: #003300;
+    --ludus-button-hover: #005500;
+    --ludus-success: #00ff00;
+    --ludus-warning: #ffff00;
+    --ludus-error: #ff0000;
+}
+
+.theme-matrix body {
+    background: var(--ludus-bg) !important;
+    color: var(--ludus-fg) !important;
+    font-family: 'Courier New', monospace !important;
+    text-shadow: 0 0 5px var(--ludus-fg) !important;
+}
+
+.theme-matrix .game-btn,
+.theme-matrix button {
+    background: var(--ludus-button-bg) !important;
+    color: var(--ludus-fg) !important;
+    border: 1px solid var(--ludus-border) !important;
+    text-shadow: 0 0 3px var(--ludus-fg) !important;
+}
+
+.theme-matrix .game-btn:hover,
+.theme-matrix button:hover {
+    background: var(--ludus-button-hover) !important;
+    box-shadow: 0 0 10px var(--ludus-fg) !important;
+}
+
+.theme-matrix h1 {
+    text-shadow: 0 0 10px var(--ludus-fg) !important;
+}
+
+.theme-matrix .board,
+.theme-matrix .scoreboard {
+    border: 2px solid var(--ludus-border) !important;
+    box-shadow: 0 0 15px var(--ludus-primary) !important;
+}

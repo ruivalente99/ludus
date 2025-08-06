@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" class="{{themeClass}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird</title>
+    {{commonCSS}}
+    {{themeCSS}}
+    <style>
+        body {
+            overflow: hidden;
+            padding: 8px;
+        }
+        #gameCanvas {
+            background: var(--vscode-editor-background);
+            border: 1px solid var(--vscode-input-border);
+            border-radius: 2px;
+            margin: 8px auto;
+            display: block;
+        }
+        .score-container {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin: 8px 0;
+            padding: 4px 8px;
+            background: var(--vscode-input-background);
+            border: 1px solid var(--vscode-input-border);
+            border-radius: 2px;
+            max-width: 200px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 12px;
+        }
+        .score, .best-score {
+            font-weight: 400;
+            margin: 0;
+        }
+        .score {
+            color: var(--vscode-foreground);
+        }
+        .best-score {
+            color: var(--vscode-descriptionForeground);
+        }
+        .controls {
+            margin: 8px 0;
+            gap: 4px;
+        }
+        .controls button {
+            padding: 4px 8px;
+            font-size: 12px;
+            min-width: 50px;
+        }
+        .game-over {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--vscode-input-background);
+            color: var(--vscode-foreground);
+            padding: 12px;
+            border-radius: 3px;
+            border: 1px solid var(--vscode-input-border);
+            text-align: center;
+            display: none;
+            z-index: 1000;
+            min-width: 150px;
+        }
+        .game-over h2 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .game-over p {
+            margin: 4px 0;
+            font-size: 12px;
+        }
+        .instructions {
+            max-width: 300px;
+            margin: 8px auto;
+            font-size: 11px;
+            line-height: 1.3;
+            color: var(--vscode-descriptionForeground);
+        }
+        .instructions p {
+            margin: 1px 0;
+        }
+        h1 {
+            font-size: 16px;
+            margin: 0 0 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="backToFlappyMenu()">← Back</button>
+        {{#showNewWindowBtn}}
+        <button class="new-window-btn" onclick="openInNewWindow('flappyBird')">🗗 New Window</button>
+        {{/showNewWindowBtn}}
+    </div>
+    <h1>🐦 Flappy Bird</h1>
+    
+    <div class="score-container">
+        <div class="score">Score: <span id="score">0</span></div>
+        <div class="best-score">Best: <span id="bestScore">0</span></div>
+    </div>
+    
+    <canvas id="gameCanvas" width="320" height="480"></canvas>
+    <div class="controls">
+        <button onclick="startFlappyGame()" id="startBtn">Start Game</button>
+        <button onclick="resetFlappyGame()">Reset</button>
+    </div>
+    <div class="instructions">
+        <p>Click or press SPACE to flap!</p>
+        <p>Avoid the pipes and stay in the air</p>
+    </div>
+    
+    <div class="game-over" id="gameOver">
+        <h2>Game Over!</h2>
+        <p>Score: <span id="finalScore">0</span></p>
+        <button onclick="startFlappyGame()">Try Again</button>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        function openInNewWindow(game) {
+            vscode.postMessage({
+                type: 'openInNewWindow',
+                game: game
+            });
+        }
+        
+        function backToFlappyMenu() {
+            vscode.postMessage({
+                type: 'backToMenu'
+            });
+        }
+        window.vscode = vscode;
+    </script>
+    <script src="{{gameScript:flappyBird}}"></script>
+</body>
+</html>

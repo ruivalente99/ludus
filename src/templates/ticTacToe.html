@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" class="{{themeClass}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    {{commonCSS}}
+    {{themeCSS}}
+    <style>
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            width: 200px;
+            height: 200px;
+            margin: 16px auto;
+            background: var(--vscode-input-border);
+            border-radius: 8px;
+            padding: 8px;
+        }
+        .cell {
+            background: var(--vscode-input-background);
+            border: none;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+            color: var(--vscode-foreground);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            min-height: 58px;
+            min-width: 58px;
+        }
+        .cell:hover:not(.taken) {
+            background: var(--vscode-button-hoverBackground);
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="backToMenuTTT()">← Back</button>
+        {{#showNewWindowBtn}}
+        <button class="new-window-btn" onclick="openInNewWindow('ticTacToe')">🗗 New Window</button>
+        {{/showNewWindowBtn}}
+    </div>
+    <h1>⭕ Tic Tac Toe</h1>
+    <div class="board" id="board"></div>
+    <div class="status" id="status">Your turn (X)</div>
+    <div class="controls">
+        <button onclick="resetGameTTT()">New Game</button>
+        <button onclick="toggleGameMode()" id="modeBtn">Switch to vs Player</button>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        function openInNewWindow(game) {
+            vscode.postMessage({
+                type: 'openInNewWindow',
+                game: game
+            });
+        }
+        window.vscode = vscode;
+    </script>
+    <script src="{{gameScript:ticTacToe}}"></script>
+</body>
+</html>

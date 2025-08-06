@@ -82,7 +82,11 @@ class RockPaperScissorsGame {
         this.updateScoreDisplay('botScore', this.state.botScore);
         const resultEl = document.getElementById('result');
         if (resultEl) {
-            resultEl.textContent = 'Choose your weapon!';
+            resultEl.classList.remove('winner', 'loser', 'tie');
+            resultEl.innerHTML = `
+                <div class="result-choices">Choose your hand! 🎮</div>
+                <div>Click any option above to start playing</div>
+            `;
         }
     }
     public backToMenu(): void {

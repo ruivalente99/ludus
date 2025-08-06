@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" class="{{themeClass}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Invaders</title>
+    {{commonCSS}}
+    {{themeCSS}}
+    <style>
+        #gameCanvas {
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="backToSpaceInvadersMenu()">← Back</button>
+        {{#showNewWindowBtn}}
+        <button class="new-window-btn" onclick="openInNewWindow('spaceInvaders')">🗗 New Window</button>
+        {{/showNewWindowBtn}}
+    </div>
+    <h1>👾 Space Invaders</h1>
+    <div class="stats">
+        <div class="stat">Score: <span id="score">0</span></div>
+        <div class="stat">Lives: <span id="lives">3</span></div>
+        <div class="stat">Level: <span id="level">1</span></div>
+    </div>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div class="controls">
+        <button onclick="startSpaceInvadersGame()">Start Game</button>
+        <button onclick="resetSpaceInvadersGame()">Reset</button>
+    </div>
+    <div class="instructions">
+        <p>Use A/D or Arrow Keys to move • SPACE to shoot • Click canvas to move and shoot</p>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        function openInNewWindow(game) {
+            vscode.postMessage({
+                type: 'openInNewWindow',
+                game: game
+            });
+        }
+        
+        function backToSpaceInvadersMenu() {
+            vscode.postMessage({
+                type: 'backToMenu'
+            });
+        }
+        window.vscode = vscode;
+    </script>
+    <script src="{{gameScript:spaceInvaders}}"></script>
+</body>
+</html>

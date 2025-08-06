@@ -99,7 +99,6 @@ class PaddleGame {
         ctx.fillRect(paddleX, paddleY, paddleWidth, paddleHeight);
         ctx.fillStyle = '#ffffff';
         ctx.font = '16px Arial';
-        ctx.fillText(`Score: ${this.state.score}`, 10, 25);
         if (!this.state.gameRunning) {
             ctx.fillStyle = '#ffffff';
             ctx.font = '24px Arial';

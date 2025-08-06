@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" class="{{themeClass}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breakout</title>
+    {{commonCSS}}
+    {{themeCSS}}
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="backToBreakoutMenu()">← Back</button>
+        {{#showNewWindowBtn}}
+        <button class="new-window-btn" onclick="openInNewWindow('breakout')">🗗 New Window</button>
+        {{/showNewWindowBtn}}
+    </div>
+    <h1>🧱 Breakout</h1>
+    <div class="stats">
+        <div class="stat">Score: <span id="score">0</span></div>
+        <div class="stat">Lives: <span id="lives">3</span></div>
+        <div class="stat">Level: <span id="level">1</span></div>
+    </div>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div class="controls">
+        <button onclick="startBreakoutGame()">Start Game</button>
+        <button onclick="resetBreakoutGame()">Reset</button>
+    </div>
+    <div class="instructions">
+        <p>Use mouse or A/D keys to move paddle</p>
+        <p>Break all the bricks to advance levels</p>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        function openInNewWindow(game) {
+            vscode.postMessage({
+                type: 'openInNewWindow',
+                game: game
+            });
+        }
+        
+        function backToBreakoutMenu() {
+            vscode.postMessage({
+                type: 'backToMenu'
+            });
+        }
+        window.vscode = vscode;
+    </script>
+    <script src="{{gameScript:breakout}}"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" class="{{themeClass}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    {{commonCSS}}
+    {{themeCSS}}
+    {{gameCSS}}
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="{{backFunction}}">← Back</button>
+        {{#showNewWindowBtn}}
+        <button class="new-window-btn" onclick="openInNewWindow('{{gameId}}')">🗗 New Window</button>
+        {{/showNewWindowBtn}}
+    </div>
+    
+    {{content}}
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        function openInNewWindow(game) {
+            vscode.postMessage({
+                type: 'openInNewWindow',
+                game: game
+            });
+        }
+        window.vscode = vscode;
+    </script>
+    {{gameScript}}
+</body>
+</html>

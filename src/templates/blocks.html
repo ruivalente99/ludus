@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" class="{{themeClass}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Puzzle</title>
+    {{commonCSS}}
+    {{themeCSS}}
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="backToBlocksMenu()">← Back</button>
+        {{#showNewWindowBtn}}
+        <button class="new-window-btn" onclick="openInNewWindow('blocks')">🗗 New Window</button>
+        {{/showNewWindowBtn}}
+    </div>
+    <h1>🧩 Block Puzzle</h1>
+    <div class="stats">
+        <div class="stat">Score: <span id="score">0</span></div>
+        <div class="stat">Level: <span id="level">1</span></div>
+        <div class="stat">Lines: <span id="lines">0</span></div>
+    </div>
+    <canvas id="gameCanvas" width="200" height="400"></canvas>
+    <div class="controls">
+        <button onclick="startBlocksGame()">Start</button>
+        <button onclick="pauseBlocksGame()">Pause</button>
+        <button onclick="resetBlocksGame()">Reset</button>
+    </div>
+    <div class="instructions">
+        <p>Use WASD or Arrow Keys to move, Space to drop</p>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        function openInNewWindow(game) {
+            vscode.postMessage({
+                type: 'openInNewWindow',
+                game: game
+            });
+        }
+        
+        function backToBlocksMenu() {
+            vscode.postMessage({
+                type: 'backToMenu'
+            });
+        }
+        window.vscode = vscode;
+    </script>
+    <script src="{{gameScript:blocks}}"></script>
+</body>
+</html>

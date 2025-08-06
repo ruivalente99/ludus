@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" class="{{themeClass}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    {{commonCSS}}
+    {{themeCSS}}
+    <style>
+        .choices {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+        .choice-btn {
+            background: var(--vscode-button-background);
+            color: var(--vscode-button-foreground);
+            border: 1px solid var(--vscode-input-border);
+            border-radius: 4px;
+            padding: 12px 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .choice-btn:hover {
+            background: var(--vscode-button-hoverBackground);
+            transform: translateY(-1px);
+        }
+        .choice-btn:active {
+            transform: translateY(0);
+        }
+        .hand-emoji {
+            font-size: 28px;
+            display: block;
+        }
+        .choice-name {
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+        .choice-btn.selecting {
+            background: var(--vscode-button-hoverBackground);
+            animation: pulse 0.5s ease-in-out;
+        }
+        .result {
+            margin: 16px 0;
+            font-size: 16px;
+            font-weight: 500;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            border-radius: 4px;
+            background: var(--vscode-input-background);
+            border: 1px solid var(--vscode-input-border);
+            transition: all 0.2s ease;
+        }
+        .result.winner {
+            background: var(--vscode-charts-green);
+            color: var(--vscode-input-background);
+        }
+        .result.loser {
+            background: var(--vscode-charts-red);
+            color: var(--vscode-input-background);
+        }
+        .result.tie {
+            background: var(--vscode-charts-yellow);
+            color: var(--vscode-input-background);
+        }
+        .result-choices {
+            font-size: 20px;
+            margin: 4px 0;
+        }
+        .vs-text {
+            font-size: 12px;
+            opacity: 0.7;
+            margin: 0 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="backToMenuRPS()">← Back</button>
+        {{#showNewWindowBtn}}
+        <button class="new-window-btn" onclick="openInNewWindow('rockPaperScissors')">🗗 New Window</button>
+        {{/showNewWindowBtn}}
+    </div>
+    <h1>✂️ Rock Paper Scissors</h1>
+    
+    <div class="scoreboard">
+        <div class="score-row">
+            <span>You: <span id="playerScore">0</span></span>
+            <span>Bot: <span id="botScore">0</span></span>
+        </div>
+    </div>
+    
+    <div class="choices">
+        <button class="choice-btn" onclick="playChoice('rock')" data-choice="rock">
+            <span class="hand-emoji">✊</span>
+            <span class="choice-name">Rock</span>
+        </button>
+        <button class="choice-btn" onclick="playChoice('paper')" data-choice="paper">
+            <span class="hand-emoji">✋</span>
+            <span class="choice-name">Paper</span>
+        </button>
+        <button class="choice-btn" onclick="playChoice('scissors')" data-choice="scissors">
+            <span class="hand-emoji">✌️</span>
+            <span class="choice-name">Scissors</span>
+        </button>
+    </div>
+    
+    <div class="result" id="result">
+        <div class="result-choices">Choose your hand! 🎮</div>
+        <div>Click any option above to start playing</div>
+    </div>
+    
+    <div class="controls">
+        <button onclick="resetGameRPS()">Reset Score</button>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        function openInNewWindow(game) {
+            vscode.postMessage({
+                type: 'openInNewWindow',
+                game: game
+            });
+        }
+        window.vscode = vscode;
+    </script>
+    <script src="{{gameScript:rockPaperScissors}}"></script>
+</body>
+</html>
