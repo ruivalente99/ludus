@@ -158,7 +158,8 @@ export function activate(context: vscode.ExtensionContext) {
         { id: 'ludus.playAsteroids', game: 'asteroids' },
         { id: 'ludus.playPong', game: 'pong' },
         { id: 'ludus.playMinesweeper', game: 'minesweeper' },
-        { id: 'ludus.playWingFlap', game: 'flappyBird' }
+        { id: 'ludus.playWingFlap', game: 'flappyBird' },
+        { id: 'ludus.playBugHunt', game: 'bugHunt' }
     ];
 
     commands.forEach(cmd => {

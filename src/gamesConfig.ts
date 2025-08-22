@@ -88,6 +88,12 @@ export const GAMES_CONFIG: GameConfig[] = [
         name: 'Wing Flap',
         emoji: '🐦',
         description: 'Navigate through obstacles by tapping'
+    },
+    {
+        id: 'bugHunt',
+        name: 'Bug Hunt',
+        emoji: '🐛',
+        description: 'Click the bugs before they escape!'
     }
 ];
 export function getGameConfig(gameId: string): GameConfig | undefined {

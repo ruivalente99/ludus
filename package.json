@@ -1,8 +1,8 @@
 {
   "name": "ludus",
   "displayName": "Ludus",
-  "description": "Collection of classic mini-games for relaxation in VS Code sidebar. Features multiple games including Tic Tac Toe, Rock Paper Scissors, Number Merge, Paddle Ball, Block Puzzle, Galaxy Defense, Snake, Breakout, Memory Match, Wing Flap and more - all written in TypeScript for better performance and maintainability.",
-  "version": "1.0.0",
+  "description": "Collection of classic mini-games for relaxation in VS Code sidebar. Features multiple games including Tic Tac Toe, Rock Paper Scissors, Number Merge, Paddle Ball, Block Puzzle, Galaxy Defense, Snake, Breakout, Memory Match, Wing Flap, Bug Hunt and more - all written in TypeScript for better performance and maintainability.",
+  "version": "1.1.0",
   "publisher": "ruivalente99",
   "icon": "ludus.png",
   "repository": {
@@ -130,6 +130,11 @@
         "category": "Ludus"
       },
       {
+        "command": "ludus.playBugHunt",
+        "title": "Play Bug Hunt",
+        "category": "Ludus"
+      },
+      {
         "command": "ludus.selectTheme",
         "title": "Select Game Theme",
         "category": "Ludus"
@@ -224,7 +229,7 @@
     "rimraf": "^3.0.2",
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.2",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.5"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
