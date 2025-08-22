@@ -139,37 +139,49 @@ class FroggerGame {
         this.state.vehicles = [];
         this.state.logs = [];
 
-        // Create vehicles (cars)
-        const vehicleRows = [300, 260, 220, 180];
+        // Create vehicles (cars) with better spacing and guaranteed gaps
+        const vehicleRows = [340, 300, 260, 220, 180]; // Complete coverage of road zone
         vehicleRows.forEach((y, index) => {
-            const speed = (index % 2 === 0 ? 1 : -1) * (1 + this.state.level * 0.5);
+            const speed = (index % 2 === 0 ? 1 : -1) * (1 + this.state.level * 0.3);
             const direction = speed > 0 ? 1 : -1;
-            const startX = direction > 0 ? -60 : this.CANVAS_WIDTH + 20;
-
-            for (let i = 0; i < 3; i++) {
+            const vehicleWidth = 40;
+            const gapSize = 60 + (Math.random() * 40); // Random gap between 60-100 pixels
+            
+            // Calculate positions to ensure there are always passable gaps
+            const spacing = vehicleWidth + gapSize;
+            const numVehicles = Math.ceil((this.CANVAS_WIDTH + 200) / spacing);
+            
+            for (let i = 0; i < numVehicles; i++) {
+                const startX = direction > 0 ? -100 : this.CANVAS_WIDTH + 60;
                 this.state.vehicles.push({
-                    x: startX + i * direction * 120,
+                    x: startX + i * direction * spacing,
                     y: y,
-                    width: 40,
+                    width: vehicleWidth,
                     height: 20,
                     speed: speed,
-                    color: ['#ff0000', '#00ff00', '#0000ff', '#ffff00'][index]
+                    color: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'][index]
                 });
             }
         });
 
-        // Create logs
-        const logRows = [140, 100, 60, 20];
+        // Create logs with better spacing and guaranteed platforms
+        const logRows = [120, 100, 80, 60, 40, 25]; // Complete coverage of water zone
         logRows.forEach((y, index) => {
-            const speed = (index % 2 === 0 ? -1 : 1) * (0.8 + this.state.level * 0.3);
+            const speed = (index % 2 === 0 ? -1 : 1) * (0.8 + this.state.level * 0.2);
             const direction = speed > 0 ? 1 : -1;
-            const startX = direction > 0 ? -80 : this.CANVAS_WIDTH + 40;
-
-            for (let i = 0; i < 2; i++) {
+            const logWidth = 80;
+            const gapSize = 50 + (Math.random() * 30); // Random gap between 50-80 pixels
+            
+            // Calculate positions to ensure there are always platforms to jump on
+            const spacing = logWidth + gapSize;
+            const numLogs = Math.ceil((this.CANVAS_WIDTH + 200) / spacing);
+            
+            for (let i = 0; i < numLogs; i++) {
+                const startX = direction > 0 ? -120 : this.CANVAS_WIDTH + 80;
                 this.state.logs.push({
-                    x: startX + i * direction * 150,
+                    x: startX + i * direction * spacing,
                     y: y,
-                    width: 80,
+                    width: logWidth,
                     height: 20,
                     speed: speed
                 });
@@ -258,11 +270,11 @@ class FroggerGame {
         for (const vehicle of this.state.vehicles) {
             vehicle.x += vehicle.speed;
 
-            // Wrap around screen
-            if (vehicle.speed > 0 && vehicle.x > this.CANVAS_WIDTH) {
-                vehicle.x = -vehicle.width;
-            } else if (vehicle.speed < 0 && vehicle.x < -vehicle.width) {
-                vehicle.x = this.CANVAS_WIDTH;
+            // Wrap around screen with better spacing
+            if (vehicle.speed > 0 && vehicle.x > this.CANVAS_WIDTH + 50) {
+                vehicle.x = -vehicle.width - 50;
+            } else if (vehicle.speed < 0 && vehicle.x < -vehicle.width - 50) {
+                vehicle.x = this.CANVAS_WIDTH + 50;
             }
         }
     }
@@ -273,31 +285,57 @@ class FroggerGame {
         for (const log of this.state.logs) {
             log.x += log.speed;
 
-            // Check if player is on this log
-            if (this.isPlayerInWater() && this.isColliding(this.state.player, log)) {
+            // Check if player is on this log (with some tolerance for easier gameplay)
+            if (this.isPlayerInWater() && this.isOnLog(this.state.player, log)) {
                 this.state.playerOnLog = log;
-                this.state.player.x += log.speed; // Move player with log
+                // Move player with log, but keep within canvas bounds
+                const newPlayerX = this.state.player.x + log.speed;
+                this.state.player.x = Math.max(0, Math.min(this.CANVAS_WIDTH - this.state.player.width, newPlayerX));
             }
 
             // Wrap around screen
-            if (log.speed > 0 && log.x > this.CANVAS_WIDTH) {
-                log.x = -log.width;
-            } else if (log.speed < 0 && log.x < -log.width) {
-                log.x = this.CANVAS_WIDTH;
+            if (log.speed > 0 && log.x > this.CANVAS_WIDTH + 50) {
+                log.x = -log.width - 50;
+            } else if (log.speed < 0 && log.x < -log.width - 50) {
+                log.x = this.CANVAS_WIDTH + 50;
             }
         }
     }
 
+    private isOnLog(player: FroggerPlayer, log: Log): boolean {
+        // More forgiving collision detection for logs
+        const tolerance = 5;
+        return player.x + tolerance < log.x + log.width &&
+            player.x + player.width - tolerance > log.x &&
+            player.y + tolerance < log.y + log.height &&
+            player.y + player.height - tolerance > log.y;
+    }
+
     private isPlayerInWater(): boolean {
-        return this.state.player.y >= 20 && this.state.player.y <= 140;
+        // Check if player is in the water zone (between logs area, excluding middle safe zone)
+        return this.state.player.y >= 20 && this.state.player.y < 140;
+    }
+
+    private isPlayerOnRoad(): boolean {
+        // Check if player is on the road (vehicle area, excluding safe zones)
+        return this.state.player.y > 160 && this.state.player.y < 360;
+    }
+
+    private isPlayerInSafeZone(): boolean {
+        // Check if player is in any safe zone
+        return (this.state.player.y >= 360) || // Bottom safe zone
+               (this.state.player.y >= 140 && this.state.player.y <= 160) || // Middle safe zone
+               (this.state.player.y <= 20); // Goal area
     }
 
     private checkCollisions(): void {
-        // Check vehicle collisions
-        for (const vehicle of this.state.vehicles) {
-            if (this.isColliding(this.state.player, vehicle)) {
-                this.playerHit();
-                return;
+        // Check vehicle collisions (only when on road)
+        if (this.isPlayerOnRoad()) {
+            for (const vehicle of this.state.vehicles) {
+                if (this.isColliding(this.state.player, vehicle)) {
+                    this.playerHit();
+                    return;
+                }
             }
         }
 
@@ -307,8 +345,9 @@ class FroggerGame {
             return;
         }
 
-        // Check if player falls off the side while on a log
-        if (this.state.player.x < 0 || this.state.player.x > this.CANVAS_WIDTH - this.state.player.width) {
+        // Check if player falls off the side while on a log (with some tolerance)
+        if (this.state.playerOnLog && 
+            (this.state.player.x < -5 || this.state.player.x > this.CANVAS_WIDTH - this.state.player.width + 5)) {
             this.playerHit();
             return;
         }
@@ -348,6 +387,10 @@ class FroggerGame {
         // Safe zone (bottom)
         this.ctx.fillStyle = '#90EE90';
         this.ctx.fillRect(0, 360, this.CANVAS_WIDTH, 40);
+
+        // Safe zone (middle) - between road and water
+        this.ctx.fillStyle = '#90EE90';
+        this.ctx.fillRect(0, 140, this.CANVAS_WIDTH, 20);
 
         // Road
         this.ctx.fillStyle = '#555555';
