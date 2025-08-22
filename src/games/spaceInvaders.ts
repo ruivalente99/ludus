@@ -307,7 +307,15 @@ function backToSpaceInvadersMenu(): void {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         (window as any).spaceInvadersGame = new SpaceInvadersGame();
+        // Auto-start the game after a brief delay
+        setTimeout(() => {
+            (window as any).spaceInvadersGame.startGame();
+        }, 500);
     });
 } else {
     (window as any).spaceInvadersGame = new SpaceInvadersGame();
+    // Auto-start the game after a brief delay
+    setTimeout(() => {
+        (window as any).spaceInvadersGame.startGame();
+    }, 500);
 }

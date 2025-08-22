@@ -325,4 +325,8 @@ class BugHuntGame {
 // Initialize the game when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     (window as any).bugHuntGame = new BugHuntGame();
+    // Auto-start the game after a brief delay
+    setTimeout(() => {
+        (window as any).bugHuntGame.startGame();
+    }, 500);
 });

@@ -386,7 +386,15 @@ function backToMinesweeperMenu(): void {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         (window as any).minesweeperGame = new MinesweeperGame();
+        // Auto-start the game after a brief delay
+        setTimeout(() => {
+            (window as any).minesweeperGame.startGame();
+        }, 500);
     });
 } else {
     (window as any).minesweeperGame = new MinesweeperGame();
+    // Auto-start the game after a brief delay
+    setTimeout(() => {
+        (window as any).minesweeperGame.startGame();
+    }, 500);
 }

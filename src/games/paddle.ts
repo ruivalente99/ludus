@@ -161,7 +161,15 @@ function backToPaddleMenu(): void {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         paddleGame = new PaddleGame();
+        // Auto-start the game after a brief delay
+        setTimeout(() => {
+            paddleGame.startGame();
+        }, 500);
     });
 } else {
     paddleGame = new PaddleGame();
+    // Auto-start the game after a brief delay
+    setTimeout(() => {
+        paddleGame.startGame();
+    }, 500);
 }

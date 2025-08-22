@@ -450,7 +450,15 @@ function backToFroggerMenu(): void {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         (window as any).froggerGame = new FroggerGame();
+        // Auto-start the game after a brief delay
+        setTimeout(() => {
+            (window as any).froggerGame.startGame();
+        }, 500);
     });
 } else {
     (window as any).froggerGame = new FroggerGame();
+    // Auto-start the game after a brief delay
+    setTimeout(() => {
+        (window as any).froggerGame.startGame();
+    }, 500);
 }

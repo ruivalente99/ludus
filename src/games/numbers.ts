@@ -238,7 +238,15 @@ function backToMenuNumbers(): void {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         numbersGame = new NumbersGame();
+        // Auto-start the game after a brief delay
+        setTimeout(() => {
+            numbersGame.newGame();
+        }, 500);
     });
 } else {
     numbersGame = new NumbersGame();
+    // Auto-start the game after a brief delay
+    setTimeout(() => {
+        numbersGame.newGame();
+    }, 500);
 }

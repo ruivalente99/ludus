@@ -300,7 +300,15 @@ function backToBlocksMenu(): void {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         blocksGame = new BlocksGame();
+        // Auto-start the game after a brief delay
+        setTimeout(() => {
+            blocksGame.startGame();
+        }, 500);
     });
 } else {
     blocksGame = new BlocksGame();
+    // Auto-start the game after a brief delay
+    setTimeout(() => {
+        blocksGame.startGame();
+    }, 500);
 }

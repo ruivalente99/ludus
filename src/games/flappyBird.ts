@@ -261,4 +261,8 @@ class FlappyBirdGame {
 }
 window.addEventListener('load', () => {
     new FlappyBirdGame();
+    // Auto-start the game after a brief delay
+    setTimeout(() => {
+        (window as any).startFlappyGame();
+    }, 500);
 });

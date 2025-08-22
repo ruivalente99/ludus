@@ -251,7 +251,15 @@ function backToPongMenu(): void {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         (window as any).pongGame = new PongGame();
+        // Auto-start the game after a brief delay
+        setTimeout(() => {
+            (window as any).pongGame.startGame();
+        }, 500);
     });
 } else {
     (window as any).pongGame = new PongGame();
+    // Auto-start the game after a brief delay
+    setTimeout(() => {
+        (window as any).pongGame.startGame();
+    }, 500);
 }
