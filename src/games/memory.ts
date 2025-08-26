@@ -16,6 +16,8 @@ interface MemoryGameState {
     gridSize: number;
     cardSize: number;
     cardSpacing: number;
+    startTime: number;
+    elapsedTime: number;
 }
 class MemoryGame {
     private canvas: HTMLCanvasElement;
@@ -23,6 +25,7 @@ class MemoryGame {
     private state: MemoryGameState;
     private vscode: any;
     private flipTimeout: NodeJS.Timeout | null = null;
+    private gameTimer: NodeJS.Timeout | null = null;
     constructor() {
         this.vscode = (window as any).vscode || (window as any).acquireVsCodeApi();
         this.canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
@@ -36,7 +39,9 @@ class MemoryGame {
             gameWon: false,
             gridSize: 4,
             cardSize: 70,
-            cardSpacing: 10
+            cardSpacing: 10,
+            startTime: 0,
+            elapsedTime: 0
         };
         this.init();
     }
@@ -50,7 +55,11 @@ class MemoryGame {
     }
     private setupControls(): void {
         this.canvas.addEventListener('click', (e) => {
-            if (!this.state.gameActive || this.state.flippedCards.length >= 2) return;
+            // Start game on first click if not already active
+            if (!this.state.gameActive) {
+                this.startGame();
+            }
+            if (this.state.flippedCards.length >= 2) return;
             const rect = this.canvas.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
             const clickY = e.clientY - rect.top;
@@ -128,16 +137,22 @@ class MemoryGame {
         this.state.score = 0;
         this.state.moves = 0;
         this.state.flippedCards = [];
+        this.state.startTime = Date.now();
+        this.state.elapsedTime = 0;
         this.createCards();
+        this.startTimer();
         this.updateDisplay();
         this.draw();
     }
     public resetGame(): void {
+        this.stopTimer();
         this.state.gameActive = false;
         this.state.gameWon = false;
         this.state.score = 0;
         this.state.moves = 0;
         this.state.flippedCards = [];
+        this.state.startTime = 0;
+        this.state.elapsedTime = 0;
         if (this.flipTimeout) {
             clearTimeout(this.flipTimeout);
             this.flipTimeout = null;
@@ -145,6 +160,20 @@ class MemoryGame {
         this.createCards();
         this.updateDisplay();
         this.draw();
+    }
+    private startTimer(): void {
+        this.gameTimer = setInterval(() => {
+            if (this.state.gameActive) {
+                this.state.elapsedTime = Math.floor((Date.now() - this.state.startTime) / 1000);
+                this.updateDisplay();
+            }
+        }, 1000);
+    }
+    private stopTimer(): void {
+        if (this.gameTimer) {
+            clearInterval(this.gameTimer);
+            this.gameTimer = null;
+        }
     }
     private draw(): void {
         this.ctx.fillStyle = '#2a2a2a';
@@ -213,12 +242,18 @@ class MemoryGame {
         const scoreEl = document.getElementById('score');
         const movesEl = document.getElementById('moves');
         const matchedEl = document.getElementById('matched');
+        const timeEl = document.getElementById('time');
         if (scoreEl) scoreEl.textContent = this.state.score.toString();
         if (movesEl) movesEl.textContent = this.state.moves.toString();
         if (matchedEl) {
             const matched = this.state.cards.filter(card => card.isMatched).length / 2;
             const total = this.state.cards.length / 2;
             matchedEl.textContent = `${matched}/${total}`;
+        }
+        if (timeEl) {
+            const minutes = Math.floor(this.state.elapsedTime / 60);
+            const seconds = this.state.elapsedTime % 60;
+            timeEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
     }
 }
@@ -237,15 +272,9 @@ function backToMemoryMenu(): void {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         (window as any).memoryGame = new MemoryGame();
-        // Auto-start the game after a brief delay
-        setTimeout(() => {
-            (window as any).memoryGame.startGame();
-        }, 500);
+        // Memory game uses manual start via "New Game" button
     });
 } else {
     (window as any).memoryGame = new MemoryGame();
-    // Auto-start the game after a brief delay
-    setTimeout(() => {
-        (window as any).memoryGame.startGame();
-    }, 500);
+    // Memory game uses manual start via "New Game" button
 }

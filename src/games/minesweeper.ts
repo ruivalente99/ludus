@@ -59,7 +59,7 @@ class MinesweeperGame {
     }
     private setupControls(): void {
         this.canvas.addEventListener('click', (e) => {
-            if (!this.state.gameActive && !this.state.firstClick) return;
+            if (!this.state.gameActive) return;
             const rect = this.canvas.getBoundingClientRect();
             const x = Math.floor((e.clientX - rect.left) / this.cellSize);
             const y = Math.floor((e.clientY - rect.top) / this.cellSize);
@@ -361,14 +361,13 @@ class MinesweeperGame {
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
     private updateDisplay(): void {
-        const minesEl = document.getElementById('mines');
+        const mineCountEl = document.getElementById('mineCount');
         const flaggedEl = document.getElementById('flagged');
-        const remainingEl = document.getElementById('remaining');
-        const timerEl = document.getElementById('timer');
-        if (minesEl) minesEl.textContent = this.state.mineCount.toString();
+        const timeEl = document.getElementById('time');
+        // Show remaining mines instead of total mines
+        if (mineCountEl) mineCountEl.textContent = (this.state.mineCount - this.state.flaggedCount).toString();
         if (flaggedEl) flaggedEl.textContent = this.state.flaggedCount.toString();
-        if (remainingEl) remainingEl.textContent = this.state.remainingFlags.toString();
-        if (timerEl) timerEl.textContent = this.formatTime(this.state.elapsedTime);
+        if (timeEl) timeEl.textContent = this.formatTime(this.state.elapsedTime);
     }
 }
 function startMinesweeperGame(): void {
@@ -386,15 +385,11 @@ function backToMinesweeperMenu(): void {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         (window as any).minesweeperGame = new MinesweeperGame();
-        // Auto-start the game after a brief delay
-        setTimeout(() => {
-            (window as any).minesweeperGame.startGame();
-        }, 500);
+        // Start the game immediately so it's ready for first click
+        (window as any).minesweeperGame.startGame();
     });
 } else {
     (window as any).minesweeperGame = new MinesweeperGame();
-    // Auto-start the game after a brief delay
-    setTimeout(() => {
-        (window as any).minesweeperGame.startGame();
-    }, 500);
+    // Start the game immediately so it's ready for first click
+    (window as any).minesweeperGame.startGame();
 }

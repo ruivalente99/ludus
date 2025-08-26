@@ -5,6 +5,7 @@ interface SnakeGameState {
     score: number;
     gameActive: boolean;
     gameOver: boolean;
+    gameStarted: boolean;
     gridSize: number;
     canvasWidth: number;
     canvasHeight: number;
@@ -26,6 +27,7 @@ class SnakeGame {
             score: 0,
             gameActive: false,
             gameOver: false,
+            gameStarted: false,
             gridSize: 20,
             canvasWidth: 400,
             canvasHeight: 400
@@ -42,6 +44,13 @@ class SnakeGame {
     }
     private setupControls(): void {
         document.addEventListener('keydown', (e) => {
+            // Start game on first movement key if not already active
+            if (!this.state.gameActive && !this.state.gameStarted) {
+                const movementKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 's', 'S', 'a', 'A', 'd', 'D'];
+                if (movementKeys.includes(e.key)) {
+                    this.startGame();
+                }
+            }
             if (!this.state.gameActive) return;
             switch (e.key) {
                 case 'ArrowUp':
@@ -100,6 +109,7 @@ class SnakeGame {
         });
     }
     public startGame(): void {
+        this.state.gameStarted = true;
         this.state.gameActive = true;
         this.state.gameOver = false;
         this.state.score = 0;
@@ -112,7 +122,9 @@ class SnakeGame {
         }
         this.gameLoop = setInterval(() => this.update(), 150);
     }
+
     public resetGame(): void {
+        this.state.gameStarted = false;
         this.state.gameActive = false;
         this.state.gameOver = false;
         this.state.score = 0;
@@ -241,7 +253,9 @@ function backToSnakeMenu(): void {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         (window as any).snakeGame = new SnakeGame();
+        // Snake starts on first key press (WASD/Arrow keys)
     });
 } else {
     (window as any).snakeGame = new SnakeGame();
+    // Snake starts on first key press (WASD/Arrow keys)
 }

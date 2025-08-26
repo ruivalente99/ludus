@@ -6,11 +6,13 @@ interface SpaceInvadersState {
     lives: number;
     gameActive: boolean;
     gameOver: boolean;
+    gameStarted: boolean;
     level: number;
     invaderDirection: number;
     invaderSpeed: number;
     lastShot: number;
 }
+
 class SpaceInvadersGame {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
@@ -18,10 +20,12 @@ class SpaceInvadersGame {
     private vscode: any;
     private gameLoop: number | null = null;
     private keys: { [key: string]: boolean } = {};
+
     constructor() {
         this.vscode = (window as any).vscode || (window as any).acquireVsCodeApi();
         this.canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d')!;
+
         this.state = {
             player: { x: 200, y: 350, width: 40, height: 20 },
             bullets: [],
@@ -30,21 +34,51 @@ class SpaceInvadersGame {
             lives: 3,
             gameActive: false,
             gameOver: false,
+            gameStarted: false,
             level: 1,
             invaderDirection: 1,
             invaderSpeed: 1,
             lastShot: 0
         };
+
         this.init();
     }
+
     private init(): void {
         this.setupControls();
         this.createInvaders();
         this.updateDisplay();
         this.draw();
+        this.showPressToStart();
     }
+
+    private showPressToStart(): void {
+        if (!this.state.gameStarted) {
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            this.ctx.fillStyle = '#00ff00';
+            this.ctx.font = 'bold 24px Arial';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('SPACE INVADERS', this.canvas.width / 2, this.canvas.height / 2 - 40);
+            
+            this.ctx.fillStyle = '#ffffff';
+            this.ctx.font = '16px Arial';
+            this.ctx.fillText('Press SPACE or Click to Start', this.canvas.width / 2, this.canvas.height / 2);
+            
+            this.ctx.font = '12px Arial';
+            this.ctx.fillText('Use A/D or Arrow Keys to move • SPACE to shoot', this.canvas.width / 2, this.canvas.height / 2 + 30);
+        }
+    }
+
     private setupControls(): void {
         document.addEventListener('keydown', (e) => {
+            if (!this.state.gameStarted && (e.key === ' ' || e.key === 'Enter')) {
+                e.preventDefault();
+                this.startGame();
+                return;
+            }
+            
             this.keys[e.key.toLowerCase()] = true;
             if (e.key === ' ') {
                 e.preventDefault();
@@ -54,7 +88,15 @@ class SpaceInvadersGame {
         document.addEventListener('keyup', (e) => {
             this.keys[e.key.toLowerCase()] = false;
         });
+
         this.canvas.addEventListener('click', (e) => {
+            if (!this.state.gameStarted) {
+                this.startGame();
+                return;
+            }
+            
+            if (!this.state.gameActive) return;
+            
             const rect = this.canvas.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
             if (clickX < this.state.player.x) {
@@ -87,6 +129,7 @@ class SpaceInvadersGame {
         }
     }
     public startGame(): void {
+        this.state.gameStarted = true;
         this.state.gameActive = true;
         this.state.gameOver = false;
         this.state.score = 0;
@@ -99,7 +142,9 @@ class SpaceInvadersGame {
         }
         this.gameLoop = requestAnimationFrame(() => this.update());
     }
+
     public resetGame(): void {
+        this.state.gameStarted = false;
         this.state.gameActive = false;
         this.state.gameOver = false;
         this.state.score = 0;
@@ -114,6 +159,7 @@ class SpaceInvadersGame {
             this.gameLoop = null;
         }
         this.draw();
+        this.showPressToStart();
     }
     private shoot(): void {
         if (!this.state.gameActive) return;
@@ -307,15 +353,9 @@ function backToSpaceInvadersMenu(): void {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         (window as any).spaceInvadersGame = new SpaceInvadersGame();
-        // Auto-start the game after a brief delay
-        setTimeout(() => {
-            (window as any).spaceInvadersGame.startGame();
-        }, 500);
+        // Space Invaders now shows "Press to Start" instead of auto-starting
     });
 } else {
     (window as any).spaceInvadersGame = new SpaceInvadersGame();
-    // Auto-start the game after a brief delay
-    setTimeout(() => {
-        (window as any).spaceInvadersGame.startGame();
-    }, 500);
+    // Space Invaders now shows "Press to Start" instead of auto-starting
 }

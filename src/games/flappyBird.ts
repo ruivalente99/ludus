@@ -29,16 +29,20 @@ class FlappyBirdGame {
     private readonly PIPE_WIDTH = 50;
     private readonly PIPE_GAP = 150;
     private readonly PIPE_SPEED = 2;
-    private readonly BIRD_SIZE = 20;
-    private readonly BIRD_COLOR = '#FFD700';
-    private readonly PIPE_COLOR = '#228B22';
-    private readonly GROUND_COLOR = '#8B4513';
+    private readonly BIRD_SIZE = 15;
+    
+    // VS Code theme colors - will be set dynamically
+    private backgroundColor: string = '';
+    private birdColor: string = '';
+    private pipeColor: string = '';
+    private textColor: string = '';
     constructor() {
         this.init();
     }
     private init(): void {
         this.canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d')!;
+        this.initThemeColors();
         this.state = {
             bird: {
                 x: 80,
@@ -56,6 +60,16 @@ class FlappyBirdGame {
         this.setupEventListeners();
         this.updateBestScore();
         this.draw();
+    }
+    private initThemeColors(): void {
+        // Get computed styles from document root to access CSS custom properties
+        const rootStyles = getComputedStyle(document.documentElement);
+        
+        // Use VS Code theme colors
+        this.backgroundColor = rootStyles.getPropertyValue('--vscode-editor-background').trim() || '#1e1e1e';
+        this.birdColor = rootStyles.getPropertyValue('--vscode-foreground').trim() || '#cccccc';
+        this.pipeColor = rootStyles.getPropertyValue('--vscode-input-border').trim() || '#6f6f6f';
+        this.textColor = rootStyles.getPropertyValue('--vscode-foreground').trim() || '#cccccc';
     }
     private setupEventListeners(): void {
         this.canvas.addEventListener('click', () => this.jump());
@@ -138,7 +152,7 @@ class FlappyBirdGame {
     }
     private generatePipe(): void {
         const minHeight = 50;
-        const maxHeight = this.canvas.height - this.PIPE_GAP - minHeight - 100;
+        const maxHeight = this.canvas.height - this.PIPE_GAP - minHeight;
         const topHeight = Math.random() * (maxHeight - minHeight) + minHeight;
         this.state.pipes.push({
             x: this.canvas.width,
@@ -151,7 +165,8 @@ class FlappyBirdGame {
     }
     private checkCollisions(): void {
         const bird = this.state.bird;
-        if (bird.y + bird.radius > this.canvas.height - 50 || bird.y - bird.radius < 0) {
+        // Check bounds - top and bottom of canvas
+        if (bird.y + bird.radius > this.canvas.height || bird.y - bird.radius < 0) {
             this.endGame();
             return;
         }
@@ -185,52 +200,42 @@ class FlappyBirdGame {
         this.showGameOver();
     }
     private draw(): void {
-        const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-        gradient.addColorStop(0, '#87CEEB');
-        gradient.addColorStop(1, '#98FB98');
-        this.ctx.fillStyle = gradient;
+        // Clean background - solid color
+        this.ctx.fillStyle = this.backgroundColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.fillStyle = this.GROUND_COLOR;
-        this.ctx.fillRect(0, this.canvas.height - 50, this.canvas.width, 50);
-        this.ctx.fillStyle = this.PIPE_COLOR;
+        
+        // Simple pipes - just rectangles, no caps
+        this.ctx.fillStyle = this.pipeColor;
         this.state.pipes.forEach(pipe => {
             this.ctx.fillRect(pipe.x, 0, pipe.width, pipe.topHeight);
-            this.ctx.fillRect(pipe.x, pipe.bottomY, pipe.width, this.canvas.height - pipe.bottomY - 50);
-            this.ctx.fillRect(pipe.x - 5, pipe.topHeight - 30, pipe.width + 10, 30);
-            this.ctx.fillRect(pipe.x - 5, pipe.bottomY, pipe.width + 10, 30);
+            this.ctx.fillRect(pipe.x, pipe.bottomY, pipe.width, this.canvas.height - pipe.bottomY);
         });
+        
         this.drawBird();
+        
         if (!this.state.gameStarted) {
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            // Semi-transparent overlay using theme colors
+            const bgColor = this.backgroundColor;
+            // Extract RGB values from hex color and create rgba
+            const r = parseInt(bgColor.slice(1, 3), 16);
+            const g = parseInt(bgColor.slice(3, 5), 16);
+            const b = parseInt(bgColor.slice(5, 7), 16);
+            this.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.85)`;
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.fillStyle = '#FFFFFF';
-            this.ctx.font = '24px Arial';
+            this.ctx.fillStyle = this.textColor;
+            this.ctx.font = '20px Arial';
             this.ctx.textAlign = 'center';
-            this.ctx.fillText('Click or Press SPACE to Start!', this.canvas.width / 2, this.canvas.height / 2);
+            this.ctx.fillText('Click or Press SPACE to Start', this.canvas.width / 2, this.canvas.height / 2);
         }
     }
     private drawBird(): void {
         const bird = this.state.bird;
-        this.ctx.save();
-        this.ctx.translate(bird.x, bird.y);
-        const rotation = Math.min(Math.max(bird.velocity * 0.1, -0.5), 0.5);
-        this.ctx.rotate(rotation);
-        this.ctx.fillStyle = this.BIRD_COLOR;
+        
+        // Simple circle - no rotation, no details
+        this.ctx.fillStyle = this.birdColor;
         this.ctx.beginPath();
-        this.ctx.arc(0, 0, bird.radius, 0, Math.PI * 2);
+        this.ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
         this.ctx.fill();
-        this.ctx.fillStyle = '#000000';
-        this.ctx.beginPath();
-        this.ctx.arc(5, -5, 3, 0, Math.PI * 2);
-        this.ctx.fill();
-        this.ctx.fillStyle = '#FFA500';
-        this.ctx.beginPath();
-        this.ctx.moveTo(bird.radius - 5, 0);
-        this.ctx.lineTo(bird.radius + 5, -3);
-        this.ctx.lineTo(bird.radius + 5, 3);
-        this.ctx.closePath();
-        this.ctx.fill();
-        this.ctx.restore();
     }
     private updateScore(): void {
         const scoreElement = document.getElementById('score');
@@ -261,8 +266,5 @@ class FlappyBirdGame {
 }
 window.addEventListener('load', () => {
     new FlappyBirdGame();
-    // Auto-start the game after a brief delay
-    setTimeout(() => {
-        (window as any).startFlappyGame();
-    }, 500);
+    // Flappy Bird uses press-to-start (click or space)
 });

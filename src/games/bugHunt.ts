@@ -29,6 +29,7 @@ class BugHuntGame {
     private vscode: any;
     private gameLoop: NodeJS.Timeout | null = null;
     private spawnLoop: NodeJS.Timeout | null = null;
+    private timerLoop: NodeJS.Timeout | null = null;
 
     constructor() {
         this.vscode = (window as any).vscode || (window as any).acquireVsCodeApi();
@@ -137,10 +138,11 @@ class BugHuntGame {
     }
 
     private getBugLifespan(type: 'regular' | 'golden' | 'speedy'): number {
+        // Return lifespan in frames (60 FPS assumed)
         switch (type) {
-            case 'golden': return 180; // 3 seconds
-            case 'speedy': return 120; // 2 seconds
-            default: return 240;       // 4 seconds
+            case 'golden': return 180; // 3 seconds at 60 FPS
+            case 'speedy': return 120; // 2 seconds at 60 FPS  
+            default: return 300;       // 5 seconds at 60 FPS (increased from 4)
         }
     }
 
@@ -257,7 +259,7 @@ class BugHuntGame {
             timeLeft: this.state.maxTime,
             maxTime: this.state.maxTime,
             bugIdCounter: 0,
-            spawnRate: 1000,
+            spawnRate: 1500, // Spawn bugs every 1.5 seconds (more reasonable)
             level: 1,
             lives: this.state.maxLives,
             maxLives: this.state.maxLives
@@ -265,11 +267,17 @@ class BugHuntGame {
         
         this.updateDisplay();
         
-        // Start game loops
+        // Start game loops with proper timing
         this.gameLoop = setInterval(() => {
             this.updateBugs();
-            this.updateTimer();
-        }, 60); // ~16.6 FPS for updates
+        }, 16); // ~60 FPS for smooth bug movement
+        
+        // Timer update - once per second
+        this.timerLoop = setInterval(() => {
+            if (this.state.gameActive) {
+                this.updateTimer();
+            }
+        }, 1000); // 1 second intervals for timer
         
         this.spawnLoop = setInterval(() => {
             this.spawnBug();
@@ -277,11 +285,12 @@ class BugHuntGame {
     }
 
     public resetGame(): void {
-        this.endGame();
+        this.endGame(); // This will clear all timers
         this.state.score = 0;
         this.state.timeLeft = this.state.maxTime;
         this.state.lives = this.state.maxLives;
         this.state.bugs = [];
+        this.state.gameOver = false;
         this.updateDisplay();
     }
 
@@ -297,6 +306,11 @@ class BugHuntGame {
         if (this.spawnLoop) {
             clearInterval(this.spawnLoop);
             this.spawnLoop = null;
+        }
+        
+        if (this.timerLoop) {
+            clearInterval(this.timerLoop);
+            this.timerLoop = null;
         }
         
         // Show game over message
@@ -325,8 +339,5 @@ class BugHuntGame {
 // Initialize the game when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     (window as any).bugHuntGame = new BugHuntGame();
-    // Auto-start the game after a brief delay
-    setTimeout(() => {
-        (window as any).bugHuntGame.startGame();
-    }, 500);
+    // Bug Hunt uses press-to-start via "Start Game" button
 });

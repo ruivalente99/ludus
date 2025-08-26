@@ -1,25 +1,34 @@
 type Direction = 'left' | 'right' | 'up' | 'down';
+
 interface NumbersGameState {
     board: number[][];
     score: number;
+    gameStarted: boolean;
 }
+
 class NumbersGame {
     private state: NumbersGameState;
     private vscode: any;
+
     constructor() {
         this.vscode = (window as any).vscode || (window as any).acquireVsCodeApi();
         this.state = {
             board: Array(4).fill(null).map(() => Array(4).fill(0)),
-            score: 0
+            score: 0,
+            gameStarted: false
         };
         this.init();
     }
+
     private init(): void {
-        this.newGame();
         this.setupKeyListeners();
+        this.updateDisplay(); // Show empty board initially
     }
+
     private setupKeyListeners(): void {
         document.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (!this.state.gameStarted) return; // Only move when game is started
+            
             const key = e.key.toLowerCase();
             if (key === 'arrowleft' || key === 'a') {
                 e.preventDefault();
@@ -220,33 +229,32 @@ class NumbersGame {
     public newGame(): void {
         this.state.board = Array(4).fill(null).map(() => Array(4).fill(0));
         this.state.score = 0;
+        this.state.gameStarted = true; // Mark game as started
         this.addRandomTile();
         this.addRandomTile();
         this.updateDisplay();
     }
+
     public backToMenu(): void {
         this.vscode.postMessage({ type: 'backToMenu' });
     }
 }
 let numbersGame: NumbersGame;
+
 function newGameNumbers(): void {
     numbersGame.newGame();
 }
+
 function backToMenuNumbers(): void {
     numbersGame.backToMenu();
 }
+
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         numbersGame = new NumbersGame();
-        // Auto-start the game after a brief delay
-        setTimeout(() => {
-            numbersGame.newGame();
-        }, 500);
+        // Numbers game doesn't auto-start - user clicks "New Game" when ready
     });
 } else {
     numbersGame = new NumbersGame();
-    // Auto-start the game after a brief delay
-    setTimeout(() => {
-        numbersGame.newGame();
-    }, 500);
+    // Numbers game doesn't auto-start - user clicks "New Game" when ready
 }
