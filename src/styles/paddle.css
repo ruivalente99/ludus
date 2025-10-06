@@ -1,0 +1,49 @@
+/* Paddle Ball game styles */
+
+.paddle-game {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+	max-width: 500px;
+	margin: 0 auto;
+}
+
+.paddle-game #gameCanvas {
+	background: linear-gradient(180deg, var(--vscode-terminal-background) 0%, var(--vscode-sideBar-background) 100%);
+	border: 2px solid var(--vscode-panel-border);
+	border-radius: 8px;
+	margin: 20px auto;
+	display: block;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.paddle-game .score {
+	background: var(--vscode-sideBar-background);
+	border: 1px solid var(--vscode-panel-border);
+	border-radius: 6px;
+	padding: 12px 20px;
+	margin: 16px 0;
+	text-align: center;
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--vscode-foreground);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.paddle-game .score strong {
+	color: var(--vscode-focusBorder);
+	font-size: 20px;
+}
+
+.paddle-game .instructions {
+	text-align: center;
+	margin-top: 20px;
+	color: var(--vscode-descriptionForeground);
+	font-size: 13px;
+	max-width: 350px;
+}
+
+.paddle-game .instructions p {
+	margin: 4px 0;
+}

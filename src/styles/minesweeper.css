@@ -1,0 +1,37 @@
+/* Minesweeper game styles */
+
+.minesweeper-game #gameCanvas {
+	border: 1px solid var(--vscode-panel-border);
+	border-radius: 4px;
+	margin: 16px auto;
+	display: block;
+	background: var(--vscode-input-background);
+}
+
+.minesweeper-game .stats {
+	display: flex;
+	justify-content: center;
+	gap: 24px;
+	margin: 16px 0;
+	font-size: 13px;
+	color: var(--vscode-foreground);
+}
+
+.minesweeper-game .stat {
+	background: var(--vscode-sideBar-background);
+	border: 1px solid var(--vscode-panel-border);
+	border-radius: 3px;
+	padding: 8px 12px;
+	font-weight: 500;
+}
+
+.minesweeper-game .instructions {
+	text-align: center;
+	margin-top: 20px;
+	color: var(--vscode-descriptionForeground);
+	font-size: 13px;
+}
+
+.minesweeper-game .instructions p {
+	margin: 4px 0;
+}

@@ -1,0 +1,125 @@
+/* Rock Paper Scissors - Clean & Minimal */
+
+.rock-paper-scissors-game .choices {
+	display: flex;
+	justify-content: center;
+	gap: 20px;
+	margin: 32px 0;
+	flex-wrap: wrap;
+}
+
+.rock-paper-scissors-game .choice-btn {
+	background: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+	border: 1px solid transparent;
+	border-radius: 12px;
+	padding: 20px 16px;
+	cursor: pointer;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	min-width: 100px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	transform: translateY(0);
+}
+
+.rock-paper-scissors-game .choice-btn:hover {
+	background: var(--vscode-button-hoverBackground);
+	transform: translateY(-3px);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.rock-paper-scissors-game .choice-btn:active {
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.rock-paper-scissors-game .hand-emoji {
+	font-size: 36px;
+	display: block;
+	line-height: 1;
+}
+
+.rock-paper-scissors-game .choice-name {
+	font-size: 13px;
+	font-weight: 500;
+	opacity: 0.8;
+	letter-spacing: 0.5px;
+}
+
+.rock-paper-scissors-game .choice-btn.selecting {
+	background: var(--vscode-button-hoverBackground);
+	animation: pulse 0.8s ease-in-out;
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.05);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+.rock-paper-scissors-game .result {
+	margin: 24px 0;
+	font-size: 18px;
+	font-weight: 500;
+	min-height: 80px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	border-radius: 16px;
+	background: var(--vscode-input-background);
+	border: none;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rock-paper-scissors-game .result.winner {
+	background: var(--vscode-charts-green);
+	color: var(--vscode-editor-background);
+	transform: scale(1.02);
+}
+
+.rock-paper-scissors-game .result.loser {
+	background: var(--vscode-charts-red);
+	color: var(--vscode-editor-background);
+	transform: scale(1.02);
+}
+
+.rock-paper-scissors-game .result.tie {
+	background: var(--vscode-charts-orange);
+	color: var(--vscode-editor-background);
+	transform: scale(1.02);
+}
+
+.rock-paper-scissors-game .result-choices {
+	font-size: 24px;
+	margin: 8px 0;
+	line-height: 1.2;
+}
+
+.rock-paper-scissors-game .scoreboard {
+	text-align: center;
+	margin: 0 0 24px 0;
+	background: transparent;
+	border: 1px solid var(--vscode-panel-border);
+	border-radius: 12px;
+	padding: 16px;
+	max-width: 300px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.rock-paper-scissors-game .score-row {
+	display: flex;
+	justify-content: space-around;
+	font-weight: 500;
+	font-size: 14px;
+}

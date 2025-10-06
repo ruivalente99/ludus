@@ -1,0 +1,37 @@
+/* Asteroids game styles */
+
+.asteroids-game #gameCanvas {
+	background: var(--vscode-terminal-background);
+	border: 1px solid var(--vscode-panel-border);
+	border-radius: 4px;
+	margin: 20px auto;
+	display: block;
+}
+
+.asteroids-game .stats {
+	display: flex;
+	justify-content: center;
+	gap: 24px;
+	margin: 16px 0;
+	font-size: 13px;
+	color: var(--vscode-foreground);
+}
+
+.asteroids-game .stat {
+	background: var(--vscode-sideBar-background);
+	border: 1px solid var(--vscode-panel-border);
+	border-radius: 3px;
+	padding: 8px 12px;
+	font-weight: 500;
+}
+
+.asteroids-game .instructions {
+	text-align: center;
+	margin-top: 20px;
+	color: var(--vscode-descriptionForeground);
+	font-size: 13px;
+}
+
+.asteroids-game .instructions p {
+	margin: 4px 0;
+}

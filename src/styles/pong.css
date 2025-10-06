@@ -1,0 +1,37 @@
+/* Pong game styles */
+
+.pong-game #gameCanvas {
+	background: var(--vscode-terminal-background);
+	border: 1px solid var(--vscode-panel-border);
+	border-radius: 4px;
+	margin: 20px auto;
+	display: block;
+}
+
+.pong-game .stats {
+	display: flex;
+	justify-content: center;
+	gap: 32px;
+	margin: 16px 0;
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--vscode-foreground);
+}
+
+.pong-game .stat {
+	background: var(--vscode-sideBar-background);
+	border: 1px solid var(--vscode-panel-border);
+	border-radius: 3px;
+	padding: 8px 16px;
+}
+
+.pong-game .instructions {
+	text-align: center;
+	margin-top: 20px;
+	color: var(--vscode-descriptionForeground);
+	font-size: 13px;
+}
+
+.pong-game .instructions p {
+	margin: 4px 0;
+}

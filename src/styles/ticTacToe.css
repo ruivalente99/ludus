@@ -1,0 +1,89 @@
+/* Tic Tac Toe game styles */
+
+.tic-tac-toe-game {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+}
+
+.tic-tac-toe-game .header {
+    flex-shrink: 0;
+    margin: 16px 20px 0 20px;
+}
+
+.tic-tac-toe-game > h1 {
+    text-align: center;
+    margin: 16px 0 8px 0;
+    flex-shrink: 0;
+}
+
+.tic-tac-toe-game .game-status {
+    text-align: center;
+    margin: 8px 0 16px 0;
+    flex-shrink: 0;
+}
+
+.tic-tac-toe-game .game-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px;
+    min-height: 0; /* Allow flex item to shrink */
+}
+
+.tic-tac-toe-game .game-board {
+    background: var(--vscode-sideBar-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 0 auto 24px auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    width: 240px;
+    height: 240px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    place-self: center; /* Center the grid itself */
+}
+
+.tic-tac-toe-game .board-cell {
+    background: var(--vscode-input-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--vscode-foreground);
+    user-select: none;
+    font-size: 32px;
+    min-height: 70px;
+    min-width: 70px;
+}
+
+.tic-tac-toe-game .board-cell:hover:not(.taken) {
+    background: var(--vscode-list-hoverBackground);
+    border-color: var(--vscode-focusBorder);
+    transform: scale(1.02);
+}
+
+.tic-tac-toe-game .board-cell:active:not(.taken) {
+    transform: scale(0.98);
+}
+
+.tic-tac-toe-game .board-cell.taken {
+    cursor: not-allowed;
+}
+
+.tic-tac-toe-game .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 12px;
+}

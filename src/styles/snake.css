@@ -1,0 +1,28 @@
+/* Snake game styles */
+
+.snake-game #gameCanvas {
+	background: var(--vscode-terminal-background);
+	border: 1px solid var(--vscode-panel-border);
+	border-radius: 4px;
+	margin: 20px auto;
+	display: block;
+}
+
+.snake-game .score {
+	text-align: center;
+	font-size: 16px;
+	font-weight: 500;
+	margin: 16px 0;
+	color: var(--vscode-foreground);
+}
+
+.snake-game .instructions {
+	text-align: center;
+	margin-top: 20px;
+	color: var(--vscode-descriptionForeground);
+	font-size: 13px;
+}
+
+.snake-game .instructions p {
+	margin: 4px 0;
+}

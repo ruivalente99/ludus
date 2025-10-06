@@ -1,0 +1,119 @@
+/* Menu-specific styles */
+
+.header-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+    position: relative;
+}
+
+.settings-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    border: 1px solid var(--vscode-widget-border);
+    border-radius: 2px;
+    padding: 6px 8px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.1s ease;
+}
+
+.settings-btn:hover {
+    background: var(--vscode-button-secondaryHoverBackground);
+}
+
+.logo {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+    opacity: 0.9;
+}
+
+.menu-page h1 {
+    color: var(--vscode-titleBar-activeForeground);
+    margin: 8px 0 4px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+}
+
+.subtitle {
+    color: var(--vscode-descriptionForeground);
+    font-size: 13px;
+    margin-bottom: 0;
+    font-weight: 400;
+}
+
+.search-container {
+    margin-bottom: 24px;
+    position: relative;
+    max-width: 300px;
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 12px 8px 32px;
+    background: var(--vscode-input-background);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 2px;
+    color: var(--vscode-input-foreground);
+    font-size: 13px;
+    box-sizing: border-box;
+    transition: border-color 0.1s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--vscode-focusBorder);
+    box-shadow: 0 0 0 1px var(--vscode-focusBorder);
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--vscode-descriptionForeground);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.section {
+    margin-bottom: 32px;
+}
+
+.section-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--vscode-foreground);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.section-title .count {
+    background: var(--vscode-badge-background);
+    color: var(--vscode-badge-foreground);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.no-results {
+    text-align: center;
+    color: var(--vscode-descriptionForeground);
+    font-style: italic;
+    margin: 40px 0;
+    grid-column: 1 / -1;
+}
