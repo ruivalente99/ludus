@@ -79,8 +79,14 @@ export class TemplateManager {
             return data[condition] ? content : '';
         });
         
-        // Replace simple variables {{variable}}
-        html = html.replace(/\{\{(\w+)\}\}/g, (match, variable) => {
+        // Handle game CSS {{gameCSS:gameName}}
+        html = html.replace(/\{\{gameCSS:([^}]+)\}\}/g, (match, gameName) => {
+            const gameCSS = this.loadCSS(`${gameName}.css`);
+            return gameCSS ? `<style>${gameCSS}</style>` : '';
+        });
+        
+        // Replace simple variables {{variable}} (with optional whitespace)
+        html = html.replace(/\{\{\s*(\w+)\s*\}\}/g, (match, variable) => {
             return data[variable] !== undefined ? String(data[variable]) : match;
         });
         
