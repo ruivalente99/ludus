@@ -1,111 +1,241 @@
-/* Base theme styles for Ludus extension */
+/* Ludus Games - VS Code Theme System */
 
-/* Dark Theme */
+/* 
+ * This file provides theme overrides that extend VS Code's native theming.
+ * All themes primarily use VS Code CSS variables for seamless integration.
+ * Custom properties are provided as fallbacks or for theme-specific enhancements.
+ */
+
+/* Dark Theme Enhancements */
 .theme-dark {
-    --ludus-bg: #1a1a1a;
-    --ludus-fg: #e0e0e0;
-    --ludus-primary: #007acc;
-    --ludus-secondary: #2d2d30;
-    --ludus-hover: #404040;
-    --ludus-border: #3c3c3c;
-    --ludus-button-bg: #0e639c;
-    --ludus-button-hover: #1177bb;
-    --ludus-success: #4ec9b0;
-    --ludus-warning: #ffcc02;
-    --ludus-error: #f44747;
+    /* Custom accent colors for games */
+    --ludus-accent-primary: var(--vscode-charts-blue, #4fc3f7);
+    --ludus-accent-success: var(--vscode-charts-green, #81c784);
+    --ludus-accent-warning: var(--vscode-charts-orange, #ffb74d);
+    --ludus-accent-error: var(--vscode-charts-red, #e57373);
+    
+    /* Game-specific colors */
+    --ludus-game-bg: var(--vscode-editor-background);
+    --ludus-game-surface: var(--vscode-sideBar-background);
+    --ludus-game-border: var(--vscode-panel-border);
+    --ludus-game-hover: var(--vscode-list-hoverBackground);
 }
 
-.theme-dark body {
-    background: var(--ludus-bg) !important;
-    color: var(--ludus-fg) !important;
+.theme-dark .game-canvas-container {
+    background: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
 }
 
-.theme-dark .game-btn,
-.theme-dark button {
-    background: var(--ludus-button-bg) !important;
-    color: var(--ludus-fg) !important;
-    border: 1px solid var(--ludus-border) !important;
+.theme-dark .game-accent {
+    color: var(--ludus-accent-primary);
 }
 
-.theme-dark .game-btn:hover,
-.theme-dark button:hover {
-    background: var(--ludus-button-hover) !important;
+.theme-dark .game-success {
+    color: var(--ludus-accent-success);
 }
 
-/* Light Theme */
+.theme-dark .game-warning {
+    color: var(--ludus-accent-warning);
+}
+
+.theme-dark .game-error {
+    color: var(--ludus-accent-error);
+}
+
+/* Light Theme Enhancements */
 .theme-light {
-    --ludus-bg: #ffffff;
-    --ludus-fg: #333333;
-    --ludus-primary: #0078d4;
-    --ludus-secondary: #f3f2f1;
-    --ludus-hover: #e1dfdd;
-    --ludus-border: #d1d1d1;
-    --ludus-button-bg: #0078d4;
-    --ludus-button-hover: #106ebe;
-    --ludus-success: #107c10;
-    --ludus-warning: #ff8c00;
-    --ludus-error: #d13438;
+    /* Custom accent colors for games */
+    --ludus-accent-primary: var(--vscode-charts-blue, #1976d2);
+    --ludus-accent-success: var(--vscode-charts-green, #388e3c);
+    --ludus-accent-warning: var(--vscode-charts-orange, #f57c00);
+    --ludus-accent-error: var(--vscode-charts-red, #d32f2f);
+    
+    /* Game-specific colors */
+    --ludus-game-bg: var(--vscode-editor-background);
+    --ludus-game-surface: var(--vscode-sideBar-background);
+    --ludus-game-border: var(--vscode-panel-border);
+    --ludus-game-hover: var(--vscode-list-hoverBackground);
 }
 
-.theme-light body {
-    background: var(--ludus-bg) !important;
-    color: var(--ludus-fg) !important;
+.theme-light .game-canvas-container {
+    background: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
 }
 
-.theme-light .game-btn,
-.theme-light button {
-    background: var(--ludus-button-bg) !important;
-    color: #ffffff !important;
-    border: 1px solid var(--ludus-border) !important;
+.theme-light .game-accent {
+    color: var(--ludus-accent-primary);
 }
 
-.theme-light .game-btn:hover,
-.theme-light button:hover {
-    background: var(--ludus-button-hover) !important;
+.theme-light .game-success {
+    color: var(--ludus-accent-success);
 }
 
-/* Matrix Theme */
+.theme-light .game-warning {
+    color: var(--ludus-accent-warning);
+}
+
+.theme-light .game-error {
+    color: var(--ludus-accent-error);
+}
+
+/* Matrix Theme - Special themed experience */
 .theme-matrix {
-    --ludus-bg: #000000;
-    --ludus-fg: #00ff00;
-    --ludus-primary: #00cc00;
-    --ludus-secondary: #001100;
-    --ludus-hover: #003300;
-    --ludus-border: #00aa00;
-    --ludus-button-bg: #003300;
-    --ludus-button-hover: #005500;
-    --ludus-success: #00ff00;
-    --ludus-warning: #ffff00;
-    --ludus-error: #ff0000;
+    /* Matrix-specific color scheme */
+    --ludus-matrix-primary: #00ff00;
+    --ludus-matrix-secondary: #00cc00;
+    --ludus-matrix-bg: #000000;
+    --ludus-matrix-surface: #001100;
+    --ludus-matrix-hover: #003300;
+    --ludus-matrix-border: #00aa00;
+    --ludus-matrix-accent: #00ffff;
+    --ludus-matrix-warning: #ffff00;
+    --ludus-matrix-error: #ff0000;
 }
 
 .theme-matrix body {
-    background: var(--ludus-bg) !important;
-    color: var(--ludus-fg) !important;
-    font-family: 'Courier New', monospace !important;
-    text-shadow: 0 0 5px var(--ludus-fg) !important;
+    background: var(--ludus-matrix-bg);
+    color: var(--ludus-matrix-primary);
+    font-family: 'Courier New', 'Monaco', 'Lucida Console', monospace;
+    text-shadow: 0 0 5px var(--ludus-matrix-primary);
 }
 
-.theme-matrix .game-btn,
+.theme-matrix h1,
+.theme-matrix h2,
+.theme-matrix h3 {
+    color: var(--ludus-matrix-primary);
+    text-shadow: 0 0 8px var(--ludus-matrix-primary);
+}
+
+.theme-matrix .btn-primary,
 .theme-matrix button {
-    background: var(--ludus-button-bg) !important;
-    color: var(--ludus-fg) !important;
-    border: 1px solid var(--ludus-border) !important;
-    text-shadow: 0 0 3px var(--ludus-fg) !important;
+    background: var(--ludus-matrix-surface);
+    color: var(--ludus-matrix-primary);
+    border: 1px solid var(--ludus-matrix-border);
+    text-shadow: 0 0 3px var(--ludus-matrix-primary);
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
 }
 
-.theme-matrix .game-btn:hover,
+.theme-matrix .btn-primary:hover,
 .theme-matrix button:hover {
-    background: var(--ludus-button-hover) !important;
-    box-shadow: 0 0 10px var(--ludus-fg) !important;
+    background: var(--ludus-matrix-hover);
+    box-shadow: 0 0 10px var(--ludus-matrix-primary);
 }
 
-.theme-matrix h1 {
-    text-shadow: 0 0 10px var(--ludus-fg) !important;
+.theme-matrix .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--ludus-matrix-border);
+    color: var(--ludus-matrix-secondary);
 }
 
-.theme-matrix .board,
-.theme-matrix .scoreboard {
-    border: 2px solid var(--ludus-border) !important;
-    box-shadow: 0 0 15px var(--ludus-primary) !important;
+.theme-matrix .game-card {
+    background: var(--ludus-matrix-surface);
+    border: 2px solid var(--ludus-matrix-border);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
 }
+
+.theme-matrix .game-card:hover {
+    box-shadow: 0 0 20px var(--ludus-matrix-primary);
+    border-color: var(--ludus-matrix-primary);
+}
+
+.theme-matrix .stats,
+.theme-matrix .scoreboard,
+.theme-matrix .game-info {
+    background: var(--ludus-matrix-surface);
+    border: 1px solid var(--ludus-matrix-border);
+    box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.1);
+}
+
+.theme-matrix .score {
+    color: var(--ludus-matrix-accent);
+    text-shadow: 0 0 5px var(--ludus-matrix-accent);
+}
+
+.theme-matrix .game-accent {
+    color: var(--ludus-matrix-accent);
+}
+
+.theme-matrix .game-success {
+    color: var(--ludus-matrix-primary);
+}
+
+.theme-matrix .game-warning {
+    color: var(--ludus-matrix-warning);
+}
+
+.theme-matrix .game-error {
+    color: var(--ludus-matrix-error);
+}
+
+.theme-matrix #gameCanvas {
+    border: 2px solid var(--ludus-matrix-border);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+    background: var(--ludus-matrix-bg);
+}
+
+/* Animation effects for Matrix theme */
+.theme-matrix .pulse {
+    animation: matrixPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes matrixPulse {
+    0%, 100% { 
+        opacity: 1; 
+        text-shadow: 0 0 5px var(--ludus-matrix-primary);
+    }
+    50% { 
+        opacity: 0.7; 
+        text-shadow: 0 0 10px var(--ludus-matrix-primary);
+    }
+}
+
+/* Theme transition effects */
+body {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.game-card,
+.stats,
+.scoreboard,
+button,
+.btn-primary,
+.btn-secondary {
+    transition: all 0.2s ease;
+}
+
+/* Light Theme Enhancements */
+.theme-light {
+    /* Custom accent colors for games */
+    --ludus-accent-primary: var(--vscode-charts-blue, #1976d2);
+    --ludus-accent-success: var(--vscode-charts-green, #388e3c);
+    --ludus-accent-warning: var(--vscode-charts-orange, #f57c00);
+    --ludus-accent-error: var(--vscode-charts-red, #d32f2f);
+    
+    /* Game-specific colors */
+    --ludus-game-bg: var(--vscode-editor-background);
+    --ludus-game-surface: var(--vscode-sideBar-background);
+    --ludus-game-border: var(--vscode-panel-border);
+    --ludus-game-hover: var(--vscode-list-hoverBackground);
+}
+
+.theme-light .game-canvas-container {
+    background: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
+}
+
+.theme-light .game-accent {
+    color: var(--ludus-accent-primary);
+}
+
+.theme-light .game-success {
+    color: var(--ludus-accent-success);
+}
+
+.theme-light .game-warning {
+    color: var(--ludus-accent-warning);
+}
+
+.theme-light .game-error {
+    color: var(--ludus-accent-error);
+}
+
