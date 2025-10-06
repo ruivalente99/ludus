@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="{{themeClass}}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,15 +9,19 @@
     {{themeCSS}}
     {{gameCSS}}
 </head>
-<body>
+
+<body class="{{gameClass}}">
     <div class="header">
         <button class="back-btn" onclick="{{backFunction}}">← Back</button>
         {{#showNewWindowBtn}}
         <button class="new-window-btn" onclick="openInNewWindow('{{gameId}}')">🗗 New Window</button>
         {{/showNewWindowBtn}}
     </div>
-    
-    {{content}}
+
+    <div class="game-container">
+        <h1>{{gameIcon}} {{gameTitle}}</h1>
+        {{content}}
+    </div>
 
     <script>
         const vscode = acquireVsCodeApi();
@@ -30,4 +35,5 @@
     </script>
     {{gameScript}}
 </body>
+
 </html>
