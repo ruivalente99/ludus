@@ -1,87 +1,54 @@
 <!DOCTYPE html>
 <html lang="en" class="{{themeClass}}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048 Game</title>
     {{commonCSS}}
     {{themeCSS}}
-    <style>
-        .board {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            width: 240px;
-            height: 240px;
-            margin: 16px auto;
-            background: var(--vscode-input-border);
-            padding: 8px;
-            border-radius: 8px;
-        }
-        .tile {
-            background: var(--vscode-input-background);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
-            transition: all 0.15s ease-in-out;
-            transform: scale(1);
-        }
-        .tile:not(:empty) {
-            animation: tileAppear 0.2s ease-in-out;
-        }
-        @keyframes tileAppear {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes tileMerge {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-        .tile-2 { background: #eee4da; color: #776e65; }
-        .tile-4 { background: #ede0c8; color: #776e65; }
-        .tile-8 { background: #f2b179; color: #f9f6f2; }
-        .tile-16 { background: #f59563; color: #f9f6f2; }
-        .tile-32 { background: #f67c5f; color: #f9f6f2; }
-        .tile-64 { background: #f65e3b; color: #f9f6f2; }
-        .tile-128 { background: #edcf72; color: #f9f6f2; font-size: 16px; }
-        .tile-256 { background: #edcc61; color: #f9f6f2; font-size: 16px; }
-        .tile-512 { background: #edc850; color: #f9f6f2; font-size: 16px; }
-        .tile-1024 { background: #edc53f; color: #f9f6f2; font-size: 14px; }
-        .tile-2048 { background: #edc22e; color: #f9f6f2; font-size: 14px; }
-    </style>
+    {{gameCSS:numbers}}
 </head>
-<body>
+
+<body class="numbers-game">
     <div class="header">
         <button class="back-btn" onclick="backToMenuNumbers()">← Back</button>
         {{#showNewWindowBtn}}
         <button class="new-window-btn" onclick="openInNewWindow('numbers')">🗗 New Window</button>
         {{/showNewWindowBtn}}
     </div>
-    <h1>🔢 2048</h1>
-    <div class="score">Score: <span id="score">0</span></div>
-    <div class="board" id="board"></div>
-    <div class="controls">
-        <button onclick="newGameNumbers()">New Game</button>
-    </div>
-    <div class="instructions">
-        <p>Use WASD or Arrow Keys to move tiles</p>
+
+    <div class="game-container">
+        <h1>🔢 2048</h1>
+        <div class="score">Score: <span id="score">0</span></div>
+        <div class="board" id="board"></div>
+        <div class="game-controls">
+            <button class="btn-primary" onclick="newGameNumbers()">New Game</button>
+        </div>
+        <div class="instructions">
+            <p>Use WASD or Arrow Keys to move tiles</p>
+        </div>
     </div>
 
     <script>
         const vscode = acquireVsCodeApi();
+
         function openInNewWindow(game) {
             vscode.postMessage({
                 type: 'openInNewWindow',
                 game: game
             });
         }
+
+        function backToMenuNumbers() {
+            vscode.postMessage({
+                type: 'backToMenu'
+            });
+        }
+
         window.vscode = vscode;
     </script>
     <script src="{{gameScript:numbers}}"></script>
 </body>
+
 </html>
