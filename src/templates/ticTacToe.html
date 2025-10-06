@@ -1,70 +1,179 @@
 <!DOCTYPE html>
 <html lang="en" class="{{themeClass}}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
     {{commonCSS}}
     {{themeCSS}}
-    <style>
-        .board {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 4px;
-            width: 200px;
-            height: 200px;
-            margin: 16px auto;
-            background: var(--vscode-input-border);
-            border-radius: 8px;
-            padding: 8px;
-        }
-        .cell {
-            background: var(--vscode-input-background);
-            border: none;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 6px;
-            color: var(--vscode-foreground);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            min-height: 58px;
-            min-width: 58px;
-        }
-        .cell:hover:not(.taken) {
-            background: var(--vscode-button-hoverBackground);
-            transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-    </style>
+    {{gameCSS:ticTacToe}}
 </head>
-<body>
+
+<body class="tic-tac-toe-game">
     <div class="header">
-        <button class="back-btn" onclick="backToMenuTTT()">← Back</button>
+        <button class="back-btn" onclick="backToMenu()">← Back</button>
         {{#showNewWindowBtn}}
         <button class="new-window-btn" onclick="openInNewWindow('ticTacToe')">🗗 New Window</button>
         {{/showNewWindowBtn}}
     </div>
-    <h1>⭕ Tic Tac Toe</h1>
-    <div class="board" id="board"></div>
-    <div class="status" id="status">Your turn (X)</div>
-    <div class="controls">
-        <button onclick="resetGameTTT()">New Game</button>
-        <button onclick="toggleGameMode()" id="modeBtn">Switch to vs Player</button>
-    </div>
 
-    <script>
-        const vscode = acquireVsCodeApi();
-        function openInNewWindow(game) {
-            vscode.postMessage({
-                type: 'openInNewWindow',
-                game: game
-            });
-        }
-        window.vscode = vscode;
-    </script>
-    <script src="{{gameScript:ticTacToe}}"></script>
+    <div class="game-container">
+        <h1>⭕ Tic Tac Toe</h1>
+
+        <div class="game-status" id="status">Player X's turn</div>
+
+        <div class="game-content">
+            <div class="game-board" id="board">
+                <!-- Board cells will be dynamically created by JavaScript -->
+            </div>
+
+            <div class="game-controls">
+                <button class="reset-btn" onclick="resetGame()">New Game</button>
+            </div>
+
+            <div class="game-stats">
+                <h3>Game Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">X Wins</div>
+                        <div class="stat-value" id="xWins">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Draws</div>
+                        <div class="stat-value" id="draws">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">O Wins</div>
+                        <div class="stat-value" id="oWins">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <p>Click on any empty cell to place your symbol.</p>
+                <p>First to get three in a row wins!</p>
+            </div>
+        </div>
+
+        <script>
+            let board = ['', '', '', '', '', '', '', '', ''];
+            let currentPlayer = 'X';
+            let gameActive = true;
+            let gameStats = JSON.parse(localStorage.getItem('ticTacToe-stats') || '{"xWins": 0, "oWins": 0, "draws": 0}');
+
+            const winningConditions = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+                [0, 4, 8], [2, 4, 6] // Diagonals
+            ];
+
+            function initializeGame() {
+                updateDisplay();
+                updateStats();
+            }
+
+            function makeMove(cellIndex) {
+                if (board[cellIndex] !== '' || !gameActive) return;
+
+                board[cellIndex] = currentPlayer;
+                const cell = document.querySelectorAll('.board-cell')[cellIndex];
+                cell.textContent = currentPlayer;
+                cell.classList.add('taken');
+                cell.classList.add('fade-in');
+
+                if (checkWinner()) {
+                    gameActive = false;
+                    const status = document.getElementById('status');
+                    status.textContent = `Player ${currentPlayer} wins! 🎉`;
+                    status.className = 'game-status winner-announcement';
+
+                    gameStats[currentPlayer === 'X' ? 'xWins' : 'oWins']++;
+                    saveStats();
+                    updateStats();
+                    return;
+                }
+
+                if (board.every(cell => cell !== '')) {
+                    gameActive = false;
+                    const status = document.getElementById('status');
+                    status.textContent = "It's a draw! 🤝";
+                    status.className = 'game-status draw-announcement';
+
+                    gameStats.draws++;
+                    saveStats();
+                    updateStats();
+                    return;
+                }
+
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                updateDisplay();
+            }
+
+            function checkWinner() {
+                return winningConditions.some(condition => {
+                    const [a, b, c] = condition;
+                    return board[a] && board[a] === board[b] && board[a] === board[c];
+                });
+            }
+
+            function updateDisplay() {
+                if (gameActive) {
+                    const status = document.getElementById('status');
+                    status.textContent = `Player ${currentPlayer}'s turn`;
+                    status.className = 'game-status turn-indicator';
+                }
+            }
+
+            function resetGame() {
+                board = ['', '', '', '', '', '', '', '', ''];
+                currentPlayer = 'X';
+                gameActive = true;
+
+                const cells = document.querySelectorAll('.board-cell');
+                cells.forEach(cell => {
+                    cell.textContent = '';
+                    cell.classList.remove('taken', 'fade-in');
+                });
+
+                updateDisplay();
+            }
+
+            function updateStats() {
+                document.getElementById('xWins').textContent = gameStats.xWins;
+                document.getElementById('oWins').textContent = gameStats.oWins;
+                document.getElementById('draws').textContent = gameStats.draws;
+            }
+
+            function saveStats() {
+                localStorage.setItem('ticTacToe-stats', JSON.stringify(gameStats));
+            }
+
+            function backToMenu() {
+                const message = { type: 'backToMenu' };
+
+                if (typeof acquireVsCodeApi !== 'undefined') {
+                    const vscode = acquireVsCodeApi();
+                    vscode.postMessage(message);
+                } else {
+                    console.log('Would go back to menu');
+                }
+            }
+
+            function openInNewWindow(gameId) {
+                const message = { type: 'openInNewWindow', game: gameId };
+
+                if (typeof acquireVsCodeApi !== 'undefined') {
+                    const vscode = acquireVsCodeApi();
+                    vscode.postMessage(message);
+                } else {
+                    console.log('Would open in new window:', gameId);
+                }
+            }
+
+            // Initialize when page loads
+            document.addEventListener('DOMContentLoaded', initializeGame);
+        </script>
 </body>
+
 </html>
