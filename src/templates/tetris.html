@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" class="{{themeClass}}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris</title>
+    {{commonCSS}}
+    {{themeCSS}}
+    {{gameCSS:tetris}}
+</head>
+
+<body class="tetris-game">
+    <div class="header">
+        <button class="back-btn" onclick="backToTetrisMenu()">← Back</button>
+        {{#showNewWindowBtn}}
+        <button class="new-window-btn" onclick="openInNewWindow('tetris')">🗗 New Window</button>
+        {{/showNewWindowBtn}}
+    </div>
+
+    <div class="game-container">
+        <h1>🧩 Tetris</h1>
+
+        <div class="game-stats three-cols">
+            <div class="stat-item">
+                <div class="stat-label">Score</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Lines</div>
+                <div class="stat-value" id="lines">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Level</div>
+                <div class="stat-value" id="level">1</div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <canvas id="gameCanvas"></canvas>
+            <div class="controls">
+                <button onclick="startTetrisGame()">Start</button>
+                <button onclick="resetTetrisGame()">Reset</button>
+            </div>
+        </div>
+
+        <div class="piece-colors">
+            <div class="piece-color">
+                <div class="color-indicator color-i"></div>
+                <span>I</span>
+            </div>
+            <div class="piece-color">
+                <div class="color-indicator color-o"></div>
+                <span>O</span>
+            </div>
+            <div class="piece-color">
+                <div class="color-indicator color-t"></div>
+                <span>T</span>
+            </div>
+            <div class="piece-color">
+                <div class="color-indicator color-s"></div>
+                <span>S</span>
+            </div>
+            <div class="piece-color">
+                <div class="color-indicator color-z"></div>
+                <span>Z</span>
+            </div>
+            <div class="piece-color">
+                <div class="color-indicator color-l"></div>
+                <span>L</span>
+            </div>
+            <div class="piece-color">
+                <div class="color-indicator color-j"></div>
+                <span>J</span>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <p>Use Arrow keys or WASD to move and rotate pieces</p>
+            <p>Down/S to drop faster • Up/W to rotate • SPACE to pause</p>
+            <p>Clear complete horizontal lines to score points</p>
+        </div>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+
+        function openInNewWindow(game) {
+            vscode.postMessage({
+                type: 'openInNewWindow',
+                game: game
+            });
+        }
+
+        function backToTetrisMenu() {
+            vscode.postMessage({
+                type: 'backToMenu'
+            });
+        }
+
+        window.vscode = vscode;
+    </script>
+    <script src="{{gameScript:tetris}}"></script>
+</body>
+
+</html>
