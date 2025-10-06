@@ -21,167 +21,256 @@
     <div class="game-container">
         <h1>⭕ Tic Tac Toe</h1>
 
+        <div class="game-mode">
+            <button class="btn-secondary mode-btn active" id="pvpBtn" onclick="setGameMode('pvp')">Player vs Player</button>
+            <button class="btn-secondary mode-btn" id="pvcBtn" onclick="setGameMode('pvc')">Player vs Computer</button>
+        </div>
+
         <div class="game-status" id="status">Player X's turn</div>
 
-        <div class="game-content">
-            <div class="game-board" id="board">
-                <button class="board-cell" onclick="makeMove(0)"></button>
-                <button class="board-cell" onclick="makeMove(1)"></button>
-                <button class="board-cell" onclick="makeMove(2)"></button>
-                <button class="board-cell" onclick="makeMove(3)"></button>
-                <button class="board-cell" onclick="makeMove(4)"></button>
-                <button class="board-cell" onclick="makeMove(5)"></button>
-                <button class="board-cell" onclick="makeMove(6)"></button>
-                <button class="board-cell" onclick="makeMove(7)"></button>
-                <button class="board-cell" onclick="makeMove(8)"></button>
-            </div>
+        <div class="game-board" id="board">
+            <button class="board-cell" onclick="makeMove(0)"></button>
+            <button class="board-cell" onclick="makeMove(1)"></button>
+            <button class="board-cell" onclick="makeMove(2)"></button>
+            <button class="board-cell" onclick="makeMove(3)"></button>
+            <button class="board-cell" onclick="makeMove(4)"></button>
+            <button class="board-cell" onclick="makeMove(5)"></button>
+            <button class="board-cell" onclick="makeMove(6)"></button>
+            <button class="board-cell" onclick="makeMove(7)"></button>
+            <button class="board-cell" onclick="makeMove(8)"></button>
+        </div>
 
-            <div class="game-controls">
-                <button class="reset-btn" onclick="resetGame()">New Game</button>
-            </div>
+        <div class="game-controls">
+            <button class="btn-primary" onclick="resetGame()">New Game</button>
+            <button class="btn-secondary" onclick="clearStats()">Clear Stats</button>
+        </div>
 
-            <div class="game-stats">
-                <h3>Game Statistics</h3>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-label">X Wins</div>
-                        <div class="stat-value" id="xWins">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Draws</div>
-                        <div class="stat-value" id="draws">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">O Wins</div>
-                        <div class="stat-value" id="oWins">0</div>
-                    </div>
-                </div>
+        <div class="game-stats">
+            <div class="stat-item">
+                <div class="stat-label">X Wins</div>
+                <div class="stat-value" id="xWins">0</div>
             </div>
-
-            <div class="instructions">
-                <p>Click on any empty cell to place your symbol.</p>
-                <p>First to get three in a row wins!</p>
+            <div class="stat-item">
+                <div class="stat-label">Draws</div>
+                <div class="stat-value" id="draws">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">O Wins</div>
+                <div class="stat-value" id="oWins">0</div>
             </div>
         </div>
 
-        <script>
-            let board = ['', '', '', '', '', '', '', '', ''];
-            let currentPlayer = 'X';
-            let gameActive = true;
-            let gameStats = JSON.parse(localStorage.getItem('ticTacToe-stats') || '{"xWins": 0, "oWins": 0, "draws": 0}');
+        <div class="instructions">
+            <p>Click on any empty cell to place your symbol</p>
+            <p>Get three in a row (horizontal, vertical, or diagonal) to win!</p>
+        </div>
+    </div>
 
-            const winningConditions = [
-                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-                [0, 4, 8], [2, 4, 6] // Diagonals
-            ];
+    <script>
+        const vscode = acquireVsCodeApi();
 
-            function initializeGame() {
+        // Game state
+        let board = ['', '', '', '', '', '', '', '', ''];
+        let currentPlayer = 'X';
+        let gameActive = true;
+        let gameMode = 'pvp'; // 'pvp' or 'pvc'
+        let gameStats = JSON.parse(localStorage.getItem('ticTacToe-stats') || '{"xWins": 0, "oWins": 0, "draws": 0}');
+
+        const winningConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6] // Diagonals
+        ];
+
+        // Initialize game
+        function initializeGame() {
+            updateDisplay();
+            updateStats();
+        }
+
+        // Set game mode
+        function setGameMode(mode) {
+            gameMode = mode;
+            document.getElementById('pvpBtn').classList.toggle('active', mode === 'pvp');
+            document.getElementById('pvcBtn').classList.toggle('active', mode === 'pvc');
+            resetGame();
+        }
+
+        // Make a move
+        function makeMove(cellIndex) {
+            if (board[cellIndex] !== '' || !gameActive) return;
+            if (gameMode === 'pvc' && currentPlayer === 'O') return; // Prevent manual O moves in PvC mode
+
+            board[cellIndex] = currentPlayer;
+            updateCell(cellIndex);
+
+            if (checkGameEnd()) return;
+
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            updateDisplay();
+
+            // Computer's turn in PvC mode
+            if (gameMode === 'pvc' && currentPlayer === 'O' && gameActive) {
+                setTimeout(makeComputerMove, 500);
+            }
+        }
+
+        // Update a specific cell
+        function updateCell(index) {
+            const cell = document.querySelectorAll('.board-cell')[index];
+            cell.textContent = board[index];
+            if (board[index]) {
+                cell.classList.add('taken');
+                cell.classList.add(board[index] === 'X' ? 'player-x' : 'player-o');
+            }
+        }
+
+        // Computer move (simple AI)
+        function makeComputerMove() {
+            if (!gameActive) return;
+
+            // Try to win
+            let move = findBestMove('O');
+            // Block player from winning
+            if (move === -1) move = findBestMove('X');
+            // Take center if available
+            if (move === -1 && board[4] === '') move = 4;
+            // Take random available cell
+            if (move === -1) {
+                const available = board.map((cell, idx) => cell === '' ? idx : -1).filter(idx => idx !== -1);
+                move = available[Math.floor(Math.random() * available.length)];
+            }
+
+            if (move !== -1) {
+                board[move] = 'O';
+                updateCell(move);
+
+                if (checkGameEnd()) return;
+
+                currentPlayer = 'X';
                 updateDisplay();
+            }
+        }
+
+        // Find best move for player
+        function findBestMove(player) {
+            for (let condition of winningConditions) {
+                const [a, b, c] = condition;
+                if (board[a] === player && board[b] === player && board[c] === '') return c;
+                if (board[a] === player && board[c] === player && board[b] === '') return b;
+                if (board[b] === player && board[c] === player && board[a] === '') return a;
+            }
+            return -1;
+        }
+
+        // Check if game ended
+        function checkGameEnd() {
+            if (checkWinner()) {
+                gameActive = false;
+                const winner = gameMode === 'pvc' && currentPlayer === 'O' ? 'Computer' : `Player ${currentPlayer}`;
+                document.getElementById('status').textContent = `${winner} wins! 🎉`;
+                document.getElementById('status').classList.add('winner');
+                
+                gameStats[currentPlayer === 'X' ? 'xWins' : 'oWins']++;
+                saveStats();
+                updateStats();
+                highlightWinner();
+                return true;
+            }
+
+            if (board.every(cell => cell !== '')) {
+                gameActive = false;
+                document.getElementById('status').textContent = "It's a draw! 🤝";
+                document.getElementById('status').classList.add('draw');
+                
+                gameStats.draws++;
+                saveStats();
+                updateStats();
+                return true;
+            }
+
+            return false;
+        }
+
+        // Check for winner
+        function checkWinner() {
+            return winningConditions.some(condition => {
+                const [a, b, c] = condition;
+                return board[a] && board[a] === board[b] && board[a] === board[c];
+            });
+        }
+
+        // Highlight winning cells
+        function highlightWinner() {
+            for (let condition of winningConditions) {
+                const [a, b, c] = condition;
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    document.querySelectorAll('.board-cell')[a].classList.add('winner-cell');
+                    document.querySelectorAll('.board-cell')[b].classList.add('winner-cell');
+                    document.querySelectorAll('.board-cell')[c].classList.add('winner-cell');
+                    break;
+                }
+            }
+        }
+
+        // Update display
+        function updateDisplay() {
+            const status = document.getElementById('status');
+            if (gameActive) {
+                const playerName = gameMode === 'pvc' && currentPlayer === 'O' ? 'Computer' : `Player ${currentPlayer}`;
+                status.textContent = `${playerName}'s turn`;
+                status.classList.remove('winner', 'draw');
+            }
+        }
+
+        // Reset game
+        function resetGame() {
+            board = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            gameActive = true;
+
+            const cells = document.querySelectorAll('.board-cell');
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('taken', 'player-x', 'player-o', 'winner-cell');
+            });
+
+            updateDisplay();
+        }
+
+        // Clear statistics
+        function clearStats() {
+            if (confirm('Are you sure you want to clear all statistics?')) {
+                gameStats = { xWins: 0, oWins: 0, draws: 0 };
+                saveStats();
                 updateStats();
             }
+        }
 
-            function makeMove(cellIndex) {
-                if (board[cellIndex] !== '' || !gameActive) return;
+        // Update stats display
+        function updateStats() {
+            document.getElementById('xWins').textContent = gameStats.xWins;
+            document.getElementById('oWins').textContent = gameStats.oWins;
+            document.getElementById('draws').textContent = gameStats.draws;
+        }
 
-                board[cellIndex] = currentPlayer;
-                const cell = document.querySelectorAll('.board-cell')[cellIndex];
-                cell.textContent = currentPlayer;
-                cell.classList.add('taken');
-                cell.classList.add('fade-in');
+        // Save stats to localStorage
+        function saveStats() {
+            localStorage.setItem('ticTacToe-stats', JSON.stringify(gameStats));
+        }
 
-                if (checkWinner()) {
-                    gameActive = false;
-                    const status = document.getElementById('status');
-                    status.textContent = `Player ${currentPlayer} wins! 🎉`;
-                    status.className = 'game-status winner-announcement';
+        // Navigation functions
+        function backToMenu() {
+            vscode.postMessage({ type: 'backToMenu' });
+        }
 
-                    gameStats[currentPlayer === 'X' ? 'xWins' : 'oWins']++;
-                    saveStats();
-                    updateStats();
-                    return;
-                }
+        function openInNewWindow(gameId) {
+            vscode.postMessage({ type: 'openInNewWindow', game: gameId });
+        }
 
-                if (board.every(cell => cell !== '')) {
-                    gameActive = false;
-                    const status = document.getElementById('status');
-                    status.textContent = "It's a draw! 🤝";
-                    status.className = 'game-status draw-announcement';
-
-                    gameStats.draws++;
-                    saveStats();
-                    updateStats();
-                    return;
-                }
-
-                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-                updateDisplay();
-            }
-
-            function checkWinner() {
-                return winningConditions.some(condition => {
-                    const [a, b, c] = condition;
-                    return board[a] && board[a] === board[b] && board[a] === board[c];
-                });
-            }
-
-            function updateDisplay() {
-                if (gameActive) {
-                    const status = document.getElementById('status');
-                    status.textContent = `Player ${currentPlayer}'s turn`;
-                    status.className = 'game-status turn-indicator';
-                }
-            }
-
-            function resetGame() {
-                board = ['', '', '', '', '', '', '', '', ''];
-                currentPlayer = 'X';
-                gameActive = true;
-
-                const cells = document.querySelectorAll('.board-cell');
-                cells.forEach(cell => {
-                    cell.textContent = '';
-                    cell.classList.remove('taken', 'fade-in');
-                });
-
-                updateDisplay();
-            }
-
-            function updateStats() {
-                document.getElementById('xWins').textContent = gameStats.xWins;
-                document.getElementById('oWins').textContent = gameStats.oWins;
-                document.getElementById('draws').textContent = gameStats.draws;
-            }
-
-            function saveStats() {
-                localStorage.setItem('ticTacToe-stats', JSON.stringify(gameStats));
-            }
-
-            function backToMenu() {
-                const message = { type: 'backToMenu' };
-
-                if (typeof acquireVsCodeApi !== 'undefined') {
-                    const vscode = acquireVsCodeApi();
-                    vscode.postMessage(message);
-                } else {
-                    console.log('Would go back to menu');
-                }
-            }
-
-            function openInNewWindow(gameId) {
-                const message = { type: 'openInNewWindow', game: gameId };
-
-                if (typeof acquireVsCodeApi !== 'undefined') {
-                    const vscode = acquireVsCodeApi();
-                    vscode.postMessage(message);
-                } else {
-                    console.log('Would open in new window:', gameId);
-                }
-            }
-
-            // Initialize when page loads
-            document.addEventListener('DOMContentLoaded', initializeGame);
-        </script>
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeGame);
+    </script>
 </body>
 
 </html>

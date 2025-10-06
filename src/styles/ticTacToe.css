@@ -3,87 +3,244 @@
 .tic-tac-toe-game {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    padding: 0;
-    margin: 0;
+    align-items: center;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .tic-tac-toe-game .header {
-    flex-shrink: 0;
-    margin: 16px 20px 0 20px;
+    position: relative;
+    width: 100%;
+    max-width: 600px;
 }
 
-.tic-tac-toe-game > h1 {
+.tic-tac-toe-game .game-container {
+    width: 100%;
+}
+
+.tic-tac-toe-game h1 {
     text-align: center;
-    margin: 16px 0 8px 0;
-    flex-shrink: 0;
+    margin: 20px 0;
+    font-size: 28px;
 }
 
+/* Game mode selector */
+.tic-tac-toe-game .game-mode {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tic-tac-toe-game .mode-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    opacity: 0.7;
+    transition: all 0.2s;
+}
+
+.tic-tac-toe-game .mode-btn.active {
+    opacity: 1;
+    background: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border-color: transparent;
+}
+
+/* Game status */
 .tic-tac-toe-game .game-status {
     text-align: center;
-    margin: 8px 0 16px 0;
-    flex-shrink: 0;
-}
-
-.tic-tac-toe-game .game-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 20px;
-    min-height: 0; /* Allow flex item to shrink */
-}
-
-.tic-tac-toe-game .game-board {
+    margin: 16px 0;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 12px;
+    border-radius: 6px;
     background: var(--vscode-sideBar-background);
     border: 1px solid var(--vscode-panel-border);
-    border-radius: 8px;
-    padding: 16px;
-    margin: 0 auto 24px auto;
+    transition: all 0.3s ease;
+}
+
+.tic-tac-toe-game .game-status.winner {
+    background: var(--vscode-inputValidation-infoBackground);
+    border-color: var(--vscode-charts-blue);
+    color: var(--vscode-charts-blue);
+    animation: celebrate 0.5s ease;
+}
+
+.tic-tac-toe-game .game-status.draw {
+    background: var(--vscode-inputValidation-warningBackground);
+    border-color: var(--vscode-charts-yellow);
+}
+
+/* Game board */
+.tic-tac-toe-game .game-board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    width: 240px;
-    height: 240px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    place-self: center; /* Center the grid itself */
+    gap: 8px;
+    max-width: 360px;
+    margin: 24px auto;
+    padding: 16px;
+    background: var(--vscode-sideBar-background);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .tic-tac-toe-game .board-cell {
+    aspect-ratio: 1;
+    min-height: 100px;
     background: var(--vscode-input-background);
-    border: 1px solid var(--vscode-panel-border);
-    border-radius: 4px;
+    border: 2px solid var(--vscode-panel-border);
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.15s ease;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--vscode-foreground);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
-    color: var(--vscode-foreground);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
-    font-size: 32px;
-    min-height: 70px;
-    min-width: 70px;
 }
 
 .tic-tac-toe-game .board-cell:hover:not(.taken) {
     background: var(--vscode-list-hoverBackground);
     border-color: var(--vscode-focusBorder);
-    transform: scale(1.02);
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .tic-tac-toe-game .board-cell:active:not(.taken) {
-    transform: scale(0.98);
+    transform: scale(0.95);
 }
 
 .tic-tac-toe-game .board-cell.taken {
     cursor: not-allowed;
+    animation: cellAppear 0.3s ease;
 }
 
-.tic-tac-toe-game .stats-grid {
+.tic-tac-toe-game .board-cell.player-x {
+    color: var(--vscode-charts-blue);
+}
+
+.tic-tac-toe-game .board-cell.player-o {
+    color: var(--vscode-charts-red);
+}
+
+.tic-tac-toe-game .board-cell.winner-cell {
+    background: var(--vscode-list-activeSelectionBackground);
+    border-color: var(--vscode-charts-green);
+    animation: winnerPulse 0.6s ease infinite;
+}
+
+/* Game controls */
+.tic-tac-toe-game .game-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 24px 0;
+}
+
+/* Game stats */
+.tic-tac-toe-game .game-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
-    margin-top: 12px;
+    margin: 24px 0;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tic-tac-toe-game .stat-item {
+    background: var(--vscode-sideBar-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+}
+
+.tic-tac-toe-game .stat-label {
+    font-size: 12px;
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.tic-tac-toe-game .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--vscode-charts-blue);
+}
+
+/* Instructions */
+.tic-tac-toe-game .instructions {
+    text-align: center;
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--vscode-sideBar-background);
+    border-radius: 8px;
+    border: 1px solid var(--vscode-panel-border);
+}
+
+.tic-tac-toe-game .instructions p {
+    margin: 8px 0;
+    font-size: 13px;
+    color: var(--vscode-descriptionForeground);
+}
+
+/* Animations */
+@keyframes cellAppear {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes winnerPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(0, 200, 100, 0.4);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(0, 200, 100, 0.6);
+    }
+}
+
+@keyframes celebrate {
+    0%, 100% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.05) rotate(1deg);
+    }
+    75% {
+        transform: scale(1.05) rotate(-1deg);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 500px) {
+    .tic-tac-toe-game .game-board {
+        max-width: 300px;
+        gap: 6px;
+        padding: 12px;
+    }
+
+    .tic-tac-toe-game .board-cell {
+        min-height: 85px;
+        font-size: 36px;
+    }
+
+    .tic-tac-toe-game .game-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
 }
