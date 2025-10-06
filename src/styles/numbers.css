@@ -1,0 +1,144 @@
+/* 2048 Numbers game styles */
+
+.numbers-game {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+	max-width: 400px;
+	margin: 0 auto;
+}
+
+.numbers-game .header {
+	position: relative;
+	width: 100%;
+	max-width: 400px;
+}
+
+.numbers-game .board {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 10px;
+	width: 280px;
+	height: 280px;
+	margin: 16px auto;
+	padding: 12px;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.numbers-game .tile {
+	background: var(--vscode-input-background);
+	border-radius: 6px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	font-size: 20px;
+	transition: all 0.15s ease-in-out;
+	transform: scale(1);
+	width: 60px;
+	height: 60px;
+	border: 1px solid var(--vscode-panel-border);
+}
+
+.numbers-game .tile:not(:empty) {
+	animation: tileAppear 0.2s ease-in-out;
+}
+
+@keyframes tileAppear {
+	0% {
+		transform: scale(0);
+		opacity: 0;
+	}
+	50% {
+		transform: scale(1.1);
+		opacity: 0.8;
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+@keyframes tileMerge {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.2);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+/* Tile color scheme adapted for VS Code */
+.numbers-game .tile-2 {
+	background: var(--vscode-list-activeSelectionBackground);
+	color: var(--vscode-list-activeSelectionForeground);
+}
+.numbers-game .tile-4 {
+	background: var(--vscode-list-hoverBackground);
+	color: var(--vscode-foreground);
+}
+.numbers-game .tile-8 {
+	background: var(--vscode-charts-orange);
+	color: var(--vscode-editor-background);
+}
+.numbers-game .tile-16 {
+	background: var(--vscode-charts-red);
+	color: var(--vscode-editor-background);
+}
+.numbers-game .tile-32 {
+	background: var(--vscode-charts-purple);
+	color: var(--vscode-editor-background);
+}
+.numbers-game .tile-64 {
+	background: var(--vscode-charts-blue);
+	color: var(--vscode-editor-background);
+}
+.numbers-game .tile-128 {
+	background: var(--vscode-charts-green);
+	color: var(--vscode-editor-background);
+	font-size: 16px;
+}
+.numbers-game .tile-256 {
+	background: var(--vscode-charts-yellow);
+	color: var(--vscode-editor-background);
+	font-size: 16px;
+}
+.numbers-game .tile-512 {
+	background: var(--vscode-editorWarning-foreground);
+	color: var(--vscode-editor-background);
+	font-size: 16px;
+}
+.numbers-game .tile-1024 {
+	background: var(--vscode-editorInfo-foreground);
+	color: var(--vscode-editor-background);
+	font-size: 14px;
+}
+.numbers-game .tile-2048 {
+	background: var(--vscode-editorError-foreground);
+	color: var(--vscode-editor-background);
+	font-size: 14px;
+}
+
+.numbers-game .score {
+	text-align: center;
+	font-size: 16px;
+	font-weight: 500;
+	margin: 16px 0;
+	color: var(--vscode-foreground);
+}
+
+.numbers-game .instructions {
+	text-align: center;
+	margin-top: 20px;
+	color: var(--vscode-descriptionForeground);
+	font-size: 13px;
+}
+
+.numbers-game .instructions p {
+	margin: 4px 0;
+}
