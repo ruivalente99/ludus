@@ -176,15 +176,27 @@ class MemoryGame {
         }
     }
     private draw(): void {
-        this.ctx.fillStyle = '#2a2a2a';
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-editor-background') || '#2a2a2a';
+        const matchedBorderColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-green') || '#00ff00';
+        const matchedCardColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-terminal-ansiGreen') || '#88ff88';
+        const flippedCardColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-input-background') || '#ffffff';
+        const cardBorderColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-contrastBorder') || '#000000';
+        const symbolColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#000000';
+        const hiddenCardColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-button-background') || '#4444ff';
+        const hiddenCardBorder = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        const patternColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-button-hoverBackground') || '#6666ff';
+        const winTextColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-green') || '#00ff00';
+        const winInfoColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        
+        this.ctx.fillStyle = bgColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         for (const card of this.state.cards) {
             if (card.isMatched) {
-                this.ctx.fillStyle = '#00ff00';
+                this.ctx.fillStyle = matchedBorderColor;
                 this.ctx.fillRect(card.x - 2, card.y - 2, this.state.cardSize + 4, this.state.cardSize + 4);
-                this.ctx.fillStyle = '#88ff88';
+                this.ctx.fillStyle = matchedCardColor;
                 this.ctx.fillRect(card.x, card.y, this.state.cardSize, this.state.cardSize);
-                this.ctx.fillStyle = '#000000';
+                this.ctx.fillStyle = symbolColor;
                 this.ctx.font = '30px Arial';
                 this.ctx.textAlign = 'center';
                 this.ctx.fillText(
@@ -193,12 +205,12 @@ class MemoryGame {
                     card.y + this.state.cardSize / 2 + 10
                 );
             } else if (card.isFlipped) {
-                this.ctx.fillStyle = '#ffffff';
+                this.ctx.fillStyle = flippedCardColor;
                 this.ctx.fillRect(card.x, card.y, this.state.cardSize, this.state.cardSize);
-                this.ctx.strokeStyle = '#000000';
+                this.ctx.strokeStyle = cardBorderColor;
                 this.ctx.lineWidth = 2;
                 this.ctx.strokeRect(card.x, card.y, this.state.cardSize, this.state.cardSize);
-                this.ctx.fillStyle = '#000000';
+                this.ctx.fillStyle = symbolColor;
                 this.ctx.font = '30px Arial';
                 this.ctx.textAlign = 'center';
                 this.ctx.fillText(
@@ -207,12 +219,12 @@ class MemoryGame {
                     card.y + this.state.cardSize / 2 + 10
                 );
             } else {
-                this.ctx.fillStyle = '#4444ff';
+                this.ctx.fillStyle = hiddenCardColor;
                 this.ctx.fillRect(card.x, card.y, this.state.cardSize, this.state.cardSize);
-                this.ctx.strokeStyle = '#ffffff';
+                this.ctx.strokeStyle = hiddenCardBorder;
                 this.ctx.lineWidth = 2;
                 this.ctx.strokeRect(card.x, card.y, this.state.cardSize, this.state.cardSize);
-                this.ctx.fillStyle = '#6666ff';
+                this.ctx.fillStyle = patternColor;
                 for (let i = 0; i < 3; i++) {
                     for (let j = 0; j < 3; j++) {
                         this.ctx.fillRect(
@@ -228,11 +240,11 @@ class MemoryGame {
         if (this.state.gameWon) {
             this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.fillStyle = '#00ff00';
+            this.ctx.fillStyle = winTextColor;
             this.ctx.font = 'bold 24px Arial';
             this.ctx.textAlign = 'center';
             this.ctx.fillText('CONGRATULATIONS!', this.canvas.width / 2, this.canvas.height / 2 - 20);
-            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillStyle = winInfoColor;
             this.ctx.font = '16px Arial';
             this.ctx.fillText(`Score: ${this.state.score}`, this.canvas.width / 2, this.canvas.height / 2 + 10);
             this.ctx.fillText(`Moves: ${this.state.moves}`, this.canvas.width / 2, this.canvas.height / 2 + 30);

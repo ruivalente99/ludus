@@ -194,24 +194,30 @@ class PongGame {
         }
     }
     private draw(): void {
-        this.ctx.fillStyle = '#000';
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-terminal-background') || '#000';
+        const elementColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        const winColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-green') || '#00ff00';
+        const loseColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-errorForeground') || '#ff0000';
+        const textColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        
+        this.ctx.fillStyle = bgColor;
         this.ctx.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
         this.ctx.setLineDash([5, 5]);
-        this.ctx.strokeStyle = '#ffffff';
+        this.ctx.strokeStyle = elementColor;
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
         this.ctx.moveTo(this.CANVAS_WIDTH / 2, 0);
         this.ctx.lineTo(this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT);
         this.ctx.stroke();
         this.ctx.setLineDash([]);
-        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillStyle = elementColor;
         this.ctx.fillRect(this.state.playerPaddle.x, this.state.playerPaddle.y, this.state.playerPaddle.width, this.state.playerPaddle.height);
         this.ctx.fillRect(this.state.aiPaddle.x, this.state.aiPaddle.y, this.state.aiPaddle.width, this.state.aiPaddle.height);
-        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillStyle = elementColor;
         this.ctx.beginPath();
         this.ctx.arc(this.state.ball.x, this.state.ball.y, this.state.ball.radius, 0, Math.PI * 2);
         this.ctx.fill();
-        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillStyle = textColor;
         this.ctx.font = '24px Arial';
         this.ctx.textAlign = 'center';
         this.ctx.fillText(this.state.playerScore.toString(), this.CANVAS_WIDTH / 4, 40);
@@ -220,11 +226,11 @@ class PongGame {
             this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
             this.ctx.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
             const winner = this.state.playerScore >= this.state.winScore ? 'YOU WIN!' : 'AI WINS!';
-            this.ctx.fillStyle = this.state.playerScore >= this.state.winScore ? '#00ff00' : '#ff0000';
+            this.ctx.fillStyle = this.state.playerScore >= this.state.winScore ? winColor : loseColor;
             this.ctx.font = 'bold 20px Arial';
             this.ctx.textAlign = 'center';
             this.ctx.fillText(winner, this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2);
-            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillStyle = textColor;
             this.ctx.font = '14px Arial';
             this.ctx.fillText(`Final Score: ${this.state.playerScore} - ${this.state.aiScore}`, this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2 + 30);
         }

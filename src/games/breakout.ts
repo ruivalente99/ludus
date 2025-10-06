@@ -72,7 +72,13 @@ class BreakoutGame {
         const brickPadding = 5;
         const brickOffsetTop = 50;
         const brickOffsetLeft = 15;
-        const colors = ['#ff0000', '#ff8800', '#ffff00', '#88ff00', '#0088ff'];
+        const colors = [
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-red') || '#ff0000',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-orange') || '#ff8800',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-yellow') || '#ffff00',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-green') || '#88ff00',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-blue') || '#0088ff'
+        ];
         for (let r = 0; r < brickRowCount; r++) {
             for (let c = 0; c < brickColumnCount; c++) {
                 this.state.bricks.push({
@@ -204,11 +210,16 @@ class BreakoutGame {
         }
     }
     private draw(): void {
-        this.ctx.fillStyle = '#001122';
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-terminal-background') || '#001122';
+        const paddleColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-blue') || '#00aaff';
+        const ballColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        const brickBorderColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        
+        this.ctx.fillStyle = bgColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.fillStyle = '#00aaff';
+        this.ctx.fillStyle = paddleColor;
         this.ctx.fillRect(this.state.paddle.x, this.state.paddle.y, this.state.paddle.width, this.state.paddle.height);
-        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillStyle = ballColor;
         this.ctx.beginPath();
         this.ctx.arc(this.state.ball.x, this.state.ball.y, this.state.ball.radius, 0, Math.PI * 2);
         this.ctx.fill();
@@ -216,7 +227,7 @@ class BreakoutGame {
             if (brick.visible) {
                 this.ctx.fillStyle = brick.color;
                 this.ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
-                this.ctx.strokeStyle = '#ffffff';
+                this.ctx.strokeStyle = brickBorderColor;
                 this.ctx.lineWidth = 1;
                 this.ctx.strokeRect(brick.x, brick.y, brick.width, brick.height);
             }
@@ -224,21 +235,29 @@ class BreakoutGame {
         if (this.state.gameOver) {
             this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.fillStyle = '#ff0000';
+            
+            const errorColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-errorForeground') || '#ff0000';
+            const textColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+            
+            this.ctx.fillStyle = errorColor;
             this.ctx.font = 'bold 24px Arial';
             this.ctx.textAlign = 'center';
             this.ctx.fillText('GAME OVER', this.canvas.width / 2, this.canvas.height / 2);
-            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillStyle = textColor;
             this.ctx.font = '16px Arial';
             this.ctx.fillText(`Final Score: ${this.state.score}`, this.canvas.width / 2, this.canvas.height / 2 + 30);
         } else if (this.state.gameWon) {
             this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.fillStyle = '#00ff00';
+            
+            const successColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-green') || '#00ff00';
+            const textColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+            
+            this.ctx.fillStyle = successColor;
             this.ctx.font = 'bold 24px Arial';
             this.ctx.textAlign = 'center';
             this.ctx.fillText('YOU WIN!', this.canvas.width / 2, this.canvas.height / 2);
-            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillStyle = textColor;
             this.ctx.font = '16px Arial';
             this.ctx.fillText(`Final Score: ${this.state.score}`, this.canvas.width / 2, this.canvas.height / 2 + 30);
         }

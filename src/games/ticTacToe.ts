@@ -18,22 +18,49 @@ class TicTacToeGame {
         this.init();
     }
     private init(): void {
-        if (document.getElementById('board')) {
+        const boardEl = document.getElementById('board');
+        if (boardEl) {
+            // Ensure the board element is visible and properly sized
+            boardEl.style.display = 'grid';
             this.createBoard();
             this.updateStatus();
         } else {
+            // Keep trying until DOM is ready
             setTimeout(() => this.init(), 100);
         }
     }
     private createBoard(): void {
         const boardEl = document.getElementById('board');
         if (!boardEl) return;
+        
         boardEl.innerHTML = '';
+        boardEl.className = 'game-board'; // Ensure proper CSS class
+        
+        // Force the grid layout styles
+        boardEl.style.display = 'grid';
+        boardEl.style.gridTemplateColumns = 'repeat(3, 1fr)';
+        boardEl.style.gap = '4px';
+        boardEl.style.width = '300px';
+        boardEl.style.height = '300px';
+        boardEl.style.margin = '20px auto';
+        
         for (let i = 0; i < 9; i++) {
             const cell = document.createElement('button');
-            cell.className = 'cell';
+            cell.className = 'board-cell';
+            cell.type = 'button';
+            cell.style.minHeight = '80px';
+            cell.style.fontSize = '28px';
+            cell.style.fontWeight = 'bold';
+            cell.style.background = 'var(--vscode-input-background)';
+            cell.style.border = '1px solid var(--vscode-panel-border)';
+            cell.style.borderRadius = '2px';
+            cell.style.cursor = 'pointer';
+            cell.style.display = 'flex';
+            cell.style.alignItems = 'center';
+            cell.style.justifyContent = 'center';
+            cell.style.color = 'var(--vscode-foreground)';
             cell.onclick = () => this.makeMove(i);
-            cell.textContent = this.state.board[i];
+            cell.textContent = this.state.board[i] || '';
             if (this.state.board[i]) {
                 cell.classList.add('taken');
             }
@@ -165,8 +192,14 @@ let ticTacToeGame: TicTacToeGame;
 function toggleGameMode(): void {
     ticTacToeGame.toggleGameMode();
 }
+function resetGame(): void {
+    ticTacToeGame.resetGame();
+}
 function resetGameTTT(): void {
     ticTacToeGame.resetGame();
+}
+function backToMenu(): void {
+    ticTacToeGame.backToMenu();
 }
 function backToMenuTTT(): void {
     ticTacToeGame.backToMenu();

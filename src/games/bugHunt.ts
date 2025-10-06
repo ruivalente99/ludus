@@ -178,7 +178,8 @@ class BugHuntGame {
 
     private draw(): void {
         // Clear canvas
-        this.ctx.fillStyle = '#2d4a2d';
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-terminal-ansiGreen') || '#2d4a2d';
+        this.ctx.fillStyle = bgColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
         // Draw bugs
@@ -192,16 +193,23 @@ class BugHuntGame {
     private drawBug(bug: Bug): void {
         const alpha = bug.lifespan / bug.maxLifespan;
         
+        const goldenBugColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-yellow') || '#ffd700';
+        const speedyBugColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-red') || '#ff6b6b';
+        const normalBugColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-descriptionForeground') || '#4a4a4a';
+        const goldenSpotColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-orange') || '#b8860b';
+        const normalSpotColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#000';
+        const warningColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-errorForeground') || '#ff0000';
+        
         // Bug body
         this.ctx.save();
         this.ctx.globalAlpha = alpha;
         
         if (bug.type === 'golden') {
-            this.ctx.fillStyle = '#ffd700';
+            this.ctx.fillStyle = goldenBugColor;
         } else if (bug.type === 'speedy') {
-            this.ctx.fillStyle = '#ff6b6b';
+            this.ctx.fillStyle = speedyBugColor;
         } else {
-            this.ctx.fillStyle = '#4a4a4a';
+            this.ctx.fillStyle = normalBugColor;
         }
         
         this.ctx.beginPath();
@@ -209,7 +217,7 @@ class BugHuntGame {
         this.ctx.fill();
         
         // Bug spots
-        this.ctx.fillStyle = bug.type === 'golden' ? '#b8860b' : '#000';
+        this.ctx.fillStyle = bug.type === 'golden' ? goldenSpotColor : normalSpotColor;
         this.ctx.beginPath();
         this.ctx.arc(bug.x - bug.size * 0.3, bug.y - bug.size * 0.2, bug.size * 0.15, 0, Math.PI * 2);
         this.ctx.fill();
@@ -219,7 +227,7 @@ class BugHuntGame {
         this.ctx.fill();
         
         // Bug antennae
-        this.ctx.strokeStyle = bug.type === 'golden' ? '#b8860b' : '#000';
+        this.ctx.strokeStyle = bug.type === 'golden' ? goldenSpotColor : normalSpotColor;
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
         this.ctx.moveTo(bug.x - bug.size * 0.2, bug.y - bug.size * 0.8);
@@ -230,7 +238,7 @@ class BugHuntGame {
         
         // Lifespan indicator
         if (bug.lifespan < bug.maxLifespan * 0.3) {
-            this.ctx.strokeStyle = '#ff0000';
+            this.ctx.strokeStyle = warningColor;
             this.ctx.lineWidth = 3;
             this.ctx.beginPath();
             this.ctx.arc(bug.x, bug.y, bug.size + 5, 0, Math.PI * 2);

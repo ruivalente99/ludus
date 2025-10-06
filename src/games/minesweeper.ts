@@ -20,6 +20,7 @@ interface MinesweeperGameState {
     startTime: number;
     elapsedTime: number;
     remainingFlags: number;
+    hoveredCell: { x: number; y: number } | null;
 }
 class MinesweeperGame {
     private canvas: HTMLCanvasElement;
@@ -45,7 +46,8 @@ class MinesweeperGame {
             firstClick: true,
             startTime: 0,
             elapsedTime: 0,
-            remainingFlags: 40
+            remainingFlags: 40,
+            hoveredCell: null
         };
         this.init();
     }
@@ -72,6 +74,25 @@ class MinesweeperGame {
             const x = Math.floor((e.clientX - rect.left) / this.cellSize);
             const y = Math.floor((e.clientY - rect.top) / this.cellSize);
             this.toggleFlag(x, y);
+        });
+        this.canvas.addEventListener('mousemove', (e) => {
+            const rect = this.canvas.getBoundingClientRect();
+            const x = Math.floor((e.clientX - rect.left) / this.cellSize);
+            const y = Math.floor((e.clientY - rect.top) / this.cellSize);
+            
+            // Update hovered cell if it changed
+            if (!this.state.hoveredCell || this.state.hoveredCell.x !== x || this.state.hoveredCell.y !== y) {
+                if (x >= 0 && x < this.state.width && y >= 0 && y < this.state.height) {
+                    this.state.hoveredCell = { x, y };
+                } else {
+                    this.state.hoveredCell = null;
+                }
+                this.draw(); // Redraw to show hover effect
+            }
+        });
+        this.canvas.addEventListener('mouseleave', () => {
+            this.state.hoveredCell = null;
+            this.draw(); // Remove hover effect
         });
     }
     private initBoard(): void {
@@ -244,7 +265,14 @@ class MinesweeperGame {
         }
     }
     private draw(): void {
-        this.ctx.fillStyle = '#c0c0c0';
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-button-secondaryBackground') || '#c0c0c0';
+        const dialogBgColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-input-background') || '#ffffff';
+        const dialogBorderColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-contrastBorder') || '#333333';
+        const winColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-green') || '#00aa00';
+        const loseColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-errorForeground') || '#aa0000';
+        const textColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#333333';
+        
+        this.ctx.fillStyle = bgColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         for (let y = 0; y < this.state.height; y++) {
             for (let x = 0; x < this.state.width; x++) {
@@ -258,17 +286,17 @@ class MinesweeperGame {
             const msgHeight = 120;
             const msgX = (this.canvas.width - msgWidth) / 2;
             const msgY = (this.canvas.height - msgHeight) / 2;
-            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillStyle = dialogBgColor;
             this.ctx.fillRect(msgX, msgY, msgWidth, msgHeight);
-            this.ctx.strokeStyle = '#333333';
+            this.ctx.strokeStyle = dialogBorderColor;
             this.ctx.lineWidth = 2;
             this.ctx.strokeRect(msgX, msgY, msgWidth, msgHeight);
-            this.ctx.fillStyle = this.state.gameWon ? '#00aa00' : '#aa0000';
+            this.ctx.fillStyle = this.state.gameWon ? winColor : loseColor;
             this.ctx.font = 'bold 24px Arial';
             this.ctx.textAlign = 'center';
             const message = this.state.gameWon ? 'YOU WIN!' : 'GAME OVER!';
             this.ctx.fillText(message, this.canvas.width / 2, msgY + 40);
-            this.ctx.fillStyle = '#333333';
+            this.ctx.fillStyle = textColor;
             this.ctx.font = '16px Arial';
             const timeText = `Time: ${this.formatTime(this.state.elapsedTime)}`;
             this.ctx.fillText(timeText, this.canvas.width / 2, msgY + 70);
@@ -279,32 +307,60 @@ class MinesweeperGame {
     private drawCell(cell: MinesweeperCell): void {
         const x = cell.x * this.cellSize;
         const y = cell.y * this.cellSize;
+        
+        // Check if this cell is being hovered
+        const isHovered = this.state.hoveredCell && 
+                         this.state.hoveredCell.x === cell.x && 
+                         this.state.hoveredCell.y === cell.y &&
+                         !cell.isRevealed;
+        
+        // Minimalist color palette
+        const mineBgColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-errorBackground') || '#ffebee';
+        const normalBgColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-editor-background') || '#ffffff';
+        const mineColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#000000';
+        
+        // High contrast colors for better visibility across themes
+        const revealedCellColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-editor-background') || '#fafafa';
+        const hiddenCellColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-button-background') || '#0e639c';
+        const hoveredCellColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-button-hoverBackground') || '#1177bb';
+        
+        const flagColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-errorForeground') || '#d32f2f';
+        const wrongFlagColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-errorForeground') || '#d32f2f';
+        const cellBorderColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-panel-border') || '#e0e0e0';
+        
         if (cell.isRevealed) {
             if (cell.isMine) {
-                this.ctx.fillStyle = this.state.gameOver ? '#ff4444' : '#ffffff';
+                // Mine cell - clean design
+                this.ctx.fillStyle = this.state.gameOver ? mineBgColor : normalBgColor;
                 this.ctx.fillRect(x, y, this.cellSize, this.cellSize);
-                this.ctx.fillStyle = '#000000';
+                
+                // Simple mine design
+                this.ctx.fillStyle = mineColor;
                 this.ctx.beginPath();
-                this.ctx.arc(x + this.cellSize / 2, y + this.cellSize / 2, 8, 0, Math.PI * 2);
+                this.ctx.arc(x + this.cellSize / 2, y + this.cellSize / 2, 6, 0, Math.PI * 2);
                 this.ctx.fill();
-                this.ctx.strokeStyle = '#000000';
-                this.ctx.lineWidth = 2;
-                const centerX = x + this.cellSize / 2;
-                const centerY = y + this.cellSize / 2;
-                for (let i = 0; i < 8; i++) {
-                    const angle = (i * Math.PI) / 4;
-                    const startX = centerX + Math.cos(angle) * 4;
-                    const startY = centerY + Math.sin(angle) * 4;
-                    const endX = centerX + Math.cos(angle) * 10;
-                    const endY = centerY + Math.sin(angle) * 10;
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(startX, startY);
-                    this.ctx.lineTo(endX, endY);
-                    this.ctx.stroke();
-                }
             } else {
-                this.ctx.fillStyle = '#f0f0f0';
+                // Revealed number cell - pressed in appearance
+                this.ctx.fillStyle = revealedCellColor;
                 this.ctx.fillRect(x, y, this.cellSize, this.cellSize);
+                
+                // Add "pressed in" effect for revealed cells
+                this.ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--vscode-panel-border') || '#333333';
+                this.ctx.lineWidth = 1;
+                this.ctx.beginPath();
+                this.ctx.moveTo(x, y);
+                this.ctx.lineTo(x, y + this.cellSize);
+                this.ctx.lineTo(x + this.cellSize, y + this.cellSize);
+                this.ctx.stroke();
+                
+                this.ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--vscode-editor-background') || '#ffffff';
+                this.ctx.beginPath();
+                this.ctx.moveTo(x + this.cellSize, y + this.cellSize);
+                this.ctx.lineTo(x + this.cellSize, y);
+                this.ctx.lineTo(x, y);
+                this.ctx.stroke();
+                
+                // Draw number if there are neighboring mines
                 if (cell.neighborMines > 0) {
                     this.ctx.fillStyle = this.getNumberColor(cell.neighborMines);
                     this.ctx.font = 'bold 14px Arial';
@@ -317,43 +373,93 @@ class MinesweeperGame {
                 }
             }
         } else {
-            this.ctx.fillStyle = '#c8c8c8';
+            // Hidden cell - highly visible design
+            this.ctx.fillStyle = isHovered ? hoveredCellColor : hiddenCellColor;
             this.ctx.fillRect(x, y, this.cellSize, this.cellSize);
-            this.ctx.fillStyle = '#ffffff';
-            this.ctx.fillRect(x, y, this.cellSize - 1, 2);
-            this.ctx.fillRect(x, y, 2, this.cellSize - 1);
-            this.ctx.fillStyle = '#808080';
-            this.ctx.fillRect(x + this.cellSize - 2, y + 2, 2, this.cellSize - 2);
-            this.ctx.fillRect(x + 2, y + this.cellSize - 2, this.cellSize - 2, 2);
-            if (cell.isFlagged) {
-                this.ctx.fillStyle = '#8B4513';
-                this.ctx.fillRect(x + this.cellSize / 2 - 1, y + 4, 2, this.cellSize - 8);
-                this.ctx.fillStyle = '#ff0000';
+            
+            // Strong 3D raised effect for unrevealed cells
+            if (!isHovered) {
+                // Bright highlight on top and left (2px thick)
+                this.ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--vscode-editor-background') || '#ffffff';
+                this.ctx.lineWidth = 2;
                 this.ctx.beginPath();
-                this.ctx.moveTo(x + this.cellSize / 2 + 1, y + 4);
-                this.ctx.lineTo(x + this.cellSize - 4, y + 6);
-                this.ctx.lineTo(x + this.cellSize / 2 + 1, y + 10);
-                this.ctx.closePath();
-                this.ctx.fill();
+                this.ctx.moveTo(x, y + this.cellSize - 1);
+                this.ctx.lineTo(x, y);
+                this.ctx.lineTo(x + this.cellSize - 1, y);
+                this.ctx.stroke();
+                
+                // Dark shadow on bottom and right (2px thick)
+                this.ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--vscode-panel-border') || '#333333';
+                this.ctx.lineWidth = 2;
+                this.ctx.beginPath();
+                this.ctx.moveTo(x + this.cellSize - 1, y + 1);
+                this.ctx.lineTo(x + this.cellSize - 1, y + this.cellSize - 1);
+                this.ctx.lineTo(x + 1, y + this.cellSize - 1);
+                this.ctx.stroke();
+                
+                // Inner highlight for extra depth
+                this.ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--vscode-list-hoverBackground') || '#e8e8e8';
+                this.ctx.lineWidth = 1;
+                this.ctx.beginPath();
+                this.ctx.moveTo(x + 1, y + this.cellSize - 2);
+                this.ctx.lineTo(x + 1, y + 1);
+                this.ctx.lineTo(x + this.cellSize - 2, y + 1);
+                this.ctx.stroke();
+            }
+            
+            // Strong hover effect
+            if (isHovered) {
+                this.ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--vscode-focusBorder') || '#007ACC';
+                this.ctx.lineWidth = 3;
+                this.ctx.strokeRect(x + 1, y + 1, this.cellSize - 2, this.cellSize - 2);
+                
+                // Add inner glow effect
+                this.ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--vscode-button-hoverBackground') || '#1177bb';
+                this.ctx.lineWidth = 1;
+                this.ctx.strokeRect(x + 2, y + 2, this.cellSize - 4, this.cellSize - 4);
+            }
+            
+            // Simple flag design
+            if (cell.isFlagged) {
+                this.ctx.fillStyle = flagColor;
+                this.ctx.font = '16px Arial';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText('🚩', x + this.cellSize / 2, y + this.cellSize / 2 + 5);
             }
         }
+        
+        // Show wrong flags when game is over
         if (this.state.gameOver && cell.isFlagged && !cell.isMine) {
-            this.ctx.strokeStyle = '#ff0000';
-            this.ctx.lineWidth = 3;
+            this.ctx.strokeStyle = wrongFlagColor;
+            this.ctx.lineWidth = 2;
             this.ctx.beginPath();
-            this.ctx.moveTo(x + 3, y + 3);
-            this.ctx.lineTo(x + this.cellSize - 3, y + this.cellSize - 3);
-            this.ctx.moveTo(x + this.cellSize - 3, y + 3);
-            this.ctx.lineTo(x + 3, y + this.cellSize - 3);
+            this.ctx.moveTo(x + 4, y + 4);
+            this.ctx.lineTo(x + this.cellSize - 4, y + this.cellSize - 4);
+            this.ctx.moveTo(x + this.cellSize - 4, y + 4);
+            this.ctx.lineTo(x + 4, y + this.cellSize - 4);
             this.ctx.stroke();
         }
-        this.ctx.strokeStyle = '#666666';
+        
+        // Strong border for cell definition
+        this.ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#000000';
         this.ctx.lineWidth = 1;
+        this.ctx.globalAlpha = 0.3;
         this.ctx.strokeRect(x, y, this.cellSize, this.cellSize);
+        this.ctx.globalAlpha = 1.0;
     }
     private getNumberColor(num: number): string {
-        const colors = ['', '#0000ff', '#008000', '#ff0000', '#800080', '#800000', '#008080', '#000000', '#808080'];
-        return colors[num] || '#000000';
+        const colors = [
+            '', // 0 mines
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-blue') || '#0000ff',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-green') || '#008000',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-red') || '#ff0000',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-purple') || '#800080',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-terminal-ansiRed') || '#800000',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-terminal-ansiCyan') || '#008080',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#000000',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-descriptionForeground') || '#808080'
+        ];
+        return colors[num] || getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#000000';
     }
     private formatTime(seconds: number): string {
         const mins = Math.floor(seconds / 60);

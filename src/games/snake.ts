@@ -186,9 +186,19 @@ class SnakeGame {
         this.draw();
     }
     private draw(): void {
-        this.ctx.fillStyle = '#000';
+        // Get VS Code theme colors
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-terminal-background') || '#000';
+        const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-panel-border') || '#333';
+        const snakeHeadColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-green') || '#00ff00';
+        const snakeBodyColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-list-activeSelectionBackground') || '#90EE90';
+        const foodColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-red') || '#ff0000';
+        
+        // Draw background
+        this.ctx.fillStyle = bgColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.strokeStyle = '#333';
+        
+        // Draw grid
+        this.ctx.strokeStyle = gridColor;
         this.ctx.lineWidth = 1;
         for (let i = 0; i <= this.state.canvasWidth; i += this.state.gridSize) {
             this.ctx.beginPath();
@@ -202,8 +212,10 @@ class SnakeGame {
             this.ctx.lineTo(this.state.canvasWidth, i);
             this.ctx.stroke();
         }
+        
+        // Draw snake with theme colors
         this.state.snake.forEach((segment, index) => {
-            this.ctx.fillStyle = index === 0 ? '#00ff00' : '#90EE90';
+            this.ctx.fillStyle = index === 0 ? snakeHeadColor : snakeBodyColor;
             this.ctx.fillRect(
                 segment.x * this.state.gridSize + 1,
                 segment.y * this.state.gridSize + 1,
@@ -211,7 +223,9 @@ class SnakeGame {
                 this.state.gridSize - 2
             );
         });
-        this.ctx.fillStyle = '#ff0000';
+        
+        // Draw food with theme color
+        this.ctx.fillStyle = foodColor;
         this.ctx.fillRect(
             this.state.food.x * this.state.gridSize + 1,
             this.state.food.y * this.state.gridSize + 1,
@@ -219,16 +233,28 @@ class SnakeGame {
             this.state.gridSize - 2
         );
         if (this.state.gameOver) {
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            // Semi-transparent overlay
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.fillStyle = '#ff0000';
+            
+            // Game over text with theme colors
+            const errorColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-errorForeground') || '#ff0000';
+            const foregroundColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+            const descriptionColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-descriptionForeground') || '#cccccc';
+            
+            this.ctx.fillStyle = errorColor;
             this.ctx.font = 'bold 24px Arial';
             this.ctx.textAlign = 'center';
-            this.ctx.fillText('GAME OVER', this.canvas.width / 2, this.canvas.height / 2);
-            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillText('GAME OVER', this.canvas.width / 2, this.canvas.height / 2 - 10);
+            
+            this.ctx.fillStyle = foregroundColor;
             this.ctx.font = '16px Arial';
-            this.ctx.fillText(`Score: ${this.state.score}`, this.canvas.width / 2, this.canvas.height / 2 + 30);
-            this.ctx.fillText('Length: ' + this.state.snake.length, this.canvas.width / 2, this.canvas.height / 2 + 50);
+            this.ctx.fillText(`Final Score: ${this.state.score}`, this.canvas.width / 2, this.canvas.height / 2 + 20);
+            this.ctx.fillText(`Snake Length: ${this.state.snake.length}`, this.canvas.width / 2, this.canvas.height / 2 + 40);
+            
+            this.ctx.fillStyle = descriptionColor;
+            this.ctx.font = '14px Arial';
+            this.ctx.fillText('Press Space to Play Again', this.canvas.width / 2, this.canvas.height / 2 + 65);
         }
     }
     private updateDisplay(): void {

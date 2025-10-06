@@ -277,9 +277,16 @@ class AsteroidsGame {
         return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
     }
     private draw(): void {
-        this.ctx.fillStyle = '#000';
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-terminal-background') || '#000';
+        const starColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        const playerColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        const bulletColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-yellow') || '#ffff00';
+        const errorColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-errorForeground') || '#ff0000';
+        const textColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        
+        this.ctx.fillStyle = bgColor;
         this.ctx.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
-        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillStyle = starColor;
         for (let i = 0; i < 50; i++) {
             const x = (i * 37) % this.CANVAS_WIDTH;
             const y = (i * 23) % this.CANVAS_HEIGHT;
@@ -288,33 +295,36 @@ class AsteroidsGame {
         if (this.state.invulnerable === 0 || Math.floor(this.state.invulnerable / 10) % 2 === 0) {
             this.drawPlayer();
         }
-        this.ctx.strokeStyle = '#ffffff';
+        this.ctx.strokeStyle = playerColor;
         this.ctx.lineWidth = 2;
         for (const asteroid of this.state.asteroids) {
             this.drawAsteroid(asteroid);
         }
-        this.ctx.fillStyle = '#ffff00';
+        this.ctx.fillStyle = bulletColor;
         for (const bullet of this.state.bullets) {
             this.ctx.fillRect(bullet.x - 1, bullet.y - 1, 2, 2);
         }
         if (this.state.gameOver) {
             this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
             this.ctx.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
-            this.ctx.fillStyle = '#ff0000';
+            this.ctx.fillStyle = errorColor;
             this.ctx.font = 'bold 24px Arial';
             this.ctx.textAlign = 'center';
             this.ctx.fillText('GAME OVER', this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2);
-            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillStyle = textColor;
             this.ctx.font = '16px Arial';
             this.ctx.fillText(`Final Score: ${this.state.score}`, this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2 + 30);
         }
     }
     private drawPlayer(): void {
         const player = this.state.player;
+        const playerColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        const thrustColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-orange') || '#ff8800';
+        
         this.ctx.save();
         this.ctx.translate(player.x, player.y);
         this.ctx.rotate(player.angle);
-        this.ctx.strokeStyle = '#ffffff';
+        this.ctx.strokeStyle = playerColor;
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
         this.ctx.moveTo(10, 0);
@@ -323,7 +333,7 @@ class AsteroidsGame {
         this.ctx.closePath();
         this.ctx.stroke();
         if (player.thrust) {
-            this.ctx.strokeStyle = '#ff8800';
+            this.ctx.strokeStyle = thrustColor;
             this.ctx.beginPath();
             this.ctx.moveTo(-8, -3);
             this.ctx.lineTo(-15, 0);

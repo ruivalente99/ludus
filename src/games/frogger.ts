@@ -41,6 +41,11 @@ class FroggerGame {
     private vscode: any;
     private gameLoop: number | null = null;
     private keys: { [key: string]: boolean } = {};
+    private isMoving: boolean = false;
+    private moveStartTime: number = 0;
+    private moveStartPos: { x: number; y: number } = { x: 0, y: 0 };
+    private moveTargetPos: { x: number; y: number } = { x: 0, y: 0 };
+    private moveDuration: number = 100; // milliseconds
 
     private readonly GRID_SIZE = 20;
     private readonly CANVAS_WIDTH = 400;
@@ -190,30 +195,54 @@ class FroggerGame {
     }
 
     private movePlayer(dx: number, dy: number): void {
+        // Prevent movement if already moving
+        if (this.isMoving) return;
+        
         const newX = Math.max(0, Math.min(this.CANVAS_WIDTH - this.state.player.width, this.state.player.x + dx));
         const newY = Math.max(0, Math.min(this.CANVAS_HEIGHT - this.state.player.height, this.state.player.y + dy));
 
-        this.state.player.x = newX;
-        this.state.player.y = newY;
+        // Start smooth movement animation
+        this.isMoving = true;
+        this.moveStartTime = Date.now();
+        this.moveStartPos = { x: this.state.player.x, y: this.state.player.y };
+        this.moveTargetPos = { x: newX, y: newY };
+    }
 
-        // Check if reached the top
-        if (this.state.player.y <= 20) {
-            this.state.score += 100;
-            this.resetPlayerPosition();
+    private updatePlayerMovement(): void {
+        if (!this.isMoving) return;
 
-            // Check for level completion
-            if (this.state.score % 500 === 0) {
-                this.nextLevel();
+        const elapsed = Date.now() - this.moveStartTime;
+        const progress = Math.min(elapsed / this.moveDuration, 1);
+
+        // Easing function for smoother movement
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+
+        this.state.player.x = this.moveStartPos.x + (this.moveTargetPos.x - this.moveStartPos.x) * easedProgress;
+        this.state.player.y = this.moveStartPos.y + (this.moveTargetPos.y - this.moveStartPos.y) * easedProgress;
+
+        if (progress >= 1) {
+            this.isMoving = false;
+            this.state.player.x = this.moveTargetPos.x;
+            this.state.player.y = this.moveTargetPos.y;
+
+            // Check if reached the top
+            if (this.state.player.y <= 20) {
+                this.state.score += 100;
+                this.resetPlayerPosition();
+
+                // Check for level completion
+                if (this.state.score % 500 === 0) {
+                    this.nextLevel();
+                }
             }
         }
-
-        this.draw();
     }
 
     private resetPlayerPosition(): void {
         this.state.player.x = 190;
         this.state.player.y = 380;
         this.state.playerOnLog = null;
+        this.isMoving = false; // Reset movement state
     }
 
     private nextLevel(): void {
@@ -257,6 +286,7 @@ class FroggerGame {
     private update(): void {
         if (!this.state.gameActive || this.state.gameOver) return;
 
+        this.updatePlayerMovement();
         this.updateVehicles();
         this.updateLogs();
         this.checkCollisions();

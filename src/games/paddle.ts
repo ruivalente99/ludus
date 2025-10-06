@@ -89,18 +89,24 @@ class PaddleGame {
     }
     private draw(): void {
         const { ctx, canvas, ballX, ballY, paddleX, paddleY, paddleWidth, paddleHeight } = this.state;
-        ctx.fillStyle = '#1e1e1e';
+        
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-editor-background') || '#1e1e1e';
+        const ballColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        const paddleColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-button-background') || '#007acc';
+        const textColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        
+        ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#ffffff';
+        ctx.fillStyle = ballColor;
         ctx.beginPath();
         ctx.arc(ballX, ballY, 5, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#007acc';
+        ctx.fillStyle = paddleColor;
         ctx.fillRect(paddleX, paddleY, paddleWidth, paddleHeight);
-        ctx.fillStyle = '#ffffff';
+        ctx.fillStyle = textColor;
         ctx.font = '16px Arial';
         if (!this.state.gameRunning) {
-            ctx.fillStyle = '#ffffff';
+            ctx.fillStyle = textColor;
             ctx.font = '24px Arial';
             ctx.textAlign = 'center';
             ctx.fillText('Click Start to Play!', canvas.width / 2, canvas.height / 2);

@@ -3,6 +3,7 @@ interface TetrisPiece {
     x: number;
     y: number;
     color: string;
+    colorIndex: number;
 }
 interface TetrisGameState {
     board: string[][];
@@ -26,14 +27,27 @@ class TetrisGame {
     private readonly BOARD_WIDTH = 10;
     private readonly BOARD_HEIGHT = 20;
     private readonly CELL_SIZE = 20;
+    
+    private getThemeColors() {
+        return [
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-blue') || '#0066cc',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-yellow') || '#ffcc00',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-purple') || '#9966cc',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-green') || '#00cc66',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-red') || '#cc0066',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-orange') || '#ff9900',
+            getComputedStyle(document.documentElement).getPropertyValue('--vscode-focusBorder') || '#0099ff'
+        ];
+    }
+    
     private readonly PIECES = [
-        { shape: [[1, 1, 1, 1]], color: '#00ffff' },
-        { shape: [[1, 1], [1, 1]], color: '#ffff00' },
-        { shape: [[0, 1, 0], [1, 1, 1]], color: '#800080' },
-        { shape: [[0, 1, 1], [1, 1, 0]], color: '#00ff00' },
-        { shape: [[1, 1, 0], [0, 1, 1]], color: '#ff0000' },
-        { shape: [[1, 0, 0], [1, 1, 1]], color: '#ff8800' },
-        { shape: [[0, 0, 1], [1, 1, 1]], color: '#0000ff' }
+        { shape: [[1, 1, 1, 1]], colorIndex: 0 },
+        { shape: [[1, 1], [1, 1]], colorIndex: 1 },
+        { shape: [[0, 1, 0], [1, 1, 1]], colorIndex: 2 },
+        { shape: [[0, 1, 1], [1, 1, 0]], colorIndex: 3 },
+        { shape: [[1, 1, 0], [0, 1, 1]], colorIndex: 4 },
+        { shape: [[1, 0, 0], [1, 1, 1]], colorIndex: 5 },
+        { shape: [[0, 0, 1], [1, 1, 1]], colorIndex: 6 }
     ];
     constructor() {
         this.vscode = (window as any).vscode || (window as any).acquireVsCodeApi();
@@ -99,12 +113,15 @@ class TetrisGame {
         }
     }
     private createPiece(): TetrisPiece {
-        const piece = this.PIECES[Math.floor(Math.random() * this.PIECES.length)];
+        const pieceIndex = Math.floor(Math.random() * this.PIECES.length);
+        const piece = this.PIECES[pieceIndex];
+        const colors = this.getThemeColors();
         return {
             shape: piece.shape.map(row => [...row]),
             x: Math.floor(this.BOARD_WIDTH / 2) - Math.floor(piece.shape[0].length / 2),
             y: 0,
-            color: piece.color
+            color: colors[piece.colorIndex],
+            colorIndex: piece.colorIndex
         };
     }
     public startGame(): void {
@@ -142,7 +159,15 @@ class TetrisGame {
         this.draw();
     }
     private update(): void {
-        if (!this.state.gameActive || this.state.gameOver) return;
+        if (!this.state.gameActive || this.state.gameOver) {
+            if (this.gameLoop) {
+                cancelAnimationFrame(this.gameLoop);
+                this.gameLoop = null;
+            }
+            this.draw(); // Still draw to show game over screen
+            this.updateDisplay();
+            return;
+        }
         const now = Date.now();
         if (now - this.state.lastDrop > this.state.dropTime) {
             this.dropPiece();
@@ -257,19 +282,28 @@ class TetrisGame {
         }
     }
     private draw(): void {
-        this.ctx.fillStyle = '#000000';
+        // Get theme colors
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-terminal-background') || '#000000';
+        const borderColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-panel-border') || '#333333';
+        
+        this.ctx.fillStyle = bgColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Draw placed pieces
         for (let y = 0; y < this.BOARD_HEIGHT; y++) {
             for (let x = 0; x < this.BOARD_WIDTH; x++) {
                 if (this.state.board[y][x]) {
                     this.ctx.fillStyle = this.state.board[y][x];
                     this.ctx.fillRect(x * this.CELL_SIZE, y * this.CELL_SIZE, this.CELL_SIZE, this.CELL_SIZE);
-                    this.ctx.strokeStyle = '#ffffff';
+                    this.ctx.strokeStyle = borderColor;
                     this.ctx.lineWidth = 1;
                     this.ctx.strokeRect(x * this.CELL_SIZE, y * this.CELL_SIZE, this.CELL_SIZE, this.CELL_SIZE);
                 }
             }
         }
+        
+        // Draw current piece
         if (this.state.currentPiece) {
             this.ctx.fillStyle = this.state.currentPiece.color;
             for (let y = 0; y < this.state.currentPiece.shape.length; y++) {
@@ -278,14 +312,16 @@ class TetrisGame {
                         const drawX = (this.state.currentPiece.x + x) * this.CELL_SIZE;
                         const drawY = (this.state.currentPiece.y + y) * this.CELL_SIZE;
                         this.ctx.fillRect(drawX, drawY, this.CELL_SIZE, this.CELL_SIZE);
-                        this.ctx.strokeStyle = '#ffffff';
+                        this.ctx.strokeStyle = borderColor;
                         this.ctx.lineWidth = 1;
                         this.ctx.strokeRect(drawX, drawY, this.CELL_SIZE, this.CELL_SIZE);
                     }
                 }
             }
         }
-        this.ctx.strokeStyle = '#333333';
+        
+        // Draw grid
+        this.ctx.strokeStyle = gridColor;
         this.ctx.lineWidth = 0.5;
         for (let x = 0; x <= this.BOARD_WIDTH; x++) {
             this.ctx.beginPath();
@@ -299,17 +335,30 @@ class TetrisGame {
             this.ctx.lineTo(this.BOARD_WIDTH * this.CELL_SIZE, y * this.CELL_SIZE);
             this.ctx.stroke();
         }
+        
+        // Draw game over screen
         if (this.state.gameOver) {
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            // Semi-transparent overlay
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.fillStyle = '#ff0000';
-            this.ctx.font = 'bold 20px Arial';
+            
+            // Game over text with VS Code theme colors
+            this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--vscode-errorForeground') || '#ff0000';
+            this.ctx.font = 'bold 24px Arial';
             this.ctx.textAlign = 'center';
-            this.ctx.fillText('GAME OVER', this.canvas.width / 2, this.canvas.height / 2);
-            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillText('GAME OVER', this.canvas.width / 2, this.canvas.height / 2 - 20);
+            
+            // Score display
+            this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+            this.ctx.font = '16px Arial';
+            this.ctx.fillText(`Final Score: ${this.state.score}`, this.canvas.width / 2, this.canvas.height / 2 + 15);
+            this.ctx.fillText(`Lines Cleared: ${this.state.lines}`, this.canvas.width / 2, this.canvas.height / 2 + 35);
+            this.ctx.fillText(`Level Reached: ${this.state.level}`, this.canvas.width / 2, this.canvas.height / 2 + 55);
+            
+            // Restart instruction
             this.ctx.font = '14px Arial';
-            this.ctx.fillText(`Score: ${this.state.score}`, this.canvas.width / 2, this.canvas.height / 2 + 25);
-            this.ctx.fillText(`Lines: ${this.state.lines}`, this.canvas.width / 2, this.canvas.height / 2 + 45);
+            this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--vscode-descriptionForeground') || '#cccccc';
+            this.ctx.fillText('Press Space to Play Again', this.canvas.width / 2, this.canvas.height / 2 + 85);
         }
     }
     private updateDisplay(): void {

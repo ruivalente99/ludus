@@ -57,12 +57,15 @@ class SpaceInvadersGame {
             this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
             
-            this.ctx.fillStyle = '#00ff00';
+            const titleColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-green') || '#00ff00';
+            const textColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+            
+            this.ctx.fillStyle = titleColor;
             this.ctx.font = 'bold 24px Arial';
             this.ctx.textAlign = 'center';
             this.ctx.fillText('SPACE INVADERS', this.canvas.width / 2, this.canvas.height / 2 - 40);
             
-            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillStyle = textColor;
             this.ctx.font = '16px Arial';
             this.ctx.fillText('Press SPACE or Click to Start', this.canvas.width / 2, this.canvas.height / 2);
             
@@ -285,14 +288,24 @@ class SpaceInvadersGame {
         }
     }
     private draw(): void {
-        this.ctx.fillStyle = '#000';
+        // Get theme colors
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-terminal-background') || '#000';
+        const playerColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-green') || '#00ff00';
+        const cannonColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        const bulletColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-yellow') || '#ffff00';
+        
+        this.ctx.fillStyle = bgColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.drawStars();
-        this.ctx.fillStyle = '#00ff00';
+        
+        // Draw player
+        this.ctx.fillStyle = playerColor;
         this.ctx.fillRect(this.state.player.x, this.state.player.y, this.state.player.width, this.state.player.height);
-        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillStyle = cannonColor;
         this.ctx.fillRect(this.state.player.x + 15, this.state.player.y - 10, 10, 10);
-        this.ctx.fillStyle = '#ffff00';
+        
+        // Draw bullets
+        this.ctx.fillStyle = bulletColor;
         for (const bullet of this.state.bullets) {
             this.ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
         }
@@ -304,17 +317,22 @@ class SpaceInvadersGame {
         if (this.state.gameOver) {
             this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.fillStyle = '#ff0000';
+            
+            const errorColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-errorForeground') || '#ff0000';
+            const textColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+            
+            this.ctx.fillStyle = errorColor;
             this.ctx.font = 'bold 24px Arial';
             this.ctx.textAlign = 'center';
             this.ctx.fillText('GAME OVER', this.canvas.width / 2, this.canvas.height / 2);
-            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillStyle = textColor;
             this.ctx.font = '16px Arial';
             this.ctx.fillText(`Final Score: ${this.state.score}`, this.canvas.width / 2, this.canvas.height / 2 + 30);
         }
     }
     private drawStars(): void {
-        this.ctx.fillStyle = '#ffffff';
+        const starColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        this.ctx.fillStyle = starColor;
         for (let i = 0; i < 50; i++) {
             const x = (i * 37) % this.canvas.width;
             const y = (i * 23) % this.canvas.height;
@@ -322,9 +340,12 @@ class SpaceInvadersGame {
         }
     }
     private drawInvader(invader: any): void {
-        this.ctx.fillStyle = '#ff0080';
+        const invaderColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-charts-purple') || '#ff0080';
+        const eyeColor = getComputedStyle(document.documentElement).getPropertyValue('--vscode-foreground') || '#ffffff';
+        
+        this.ctx.fillStyle = invaderColor;
         this.ctx.fillRect(invader.x, invader.y, invader.width, invader.height);
-        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillStyle = eyeColor;
         this.ctx.fillRect(invader.x + 5, invader.y + 5, 4, 4);
         this.ctx.fillRect(invader.x + 21, invader.y + 5, 4, 4);
         this.ctx.fillRect(invader.x + 10, invader.y + 12, 10, 3);
