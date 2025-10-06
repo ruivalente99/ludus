@@ -1,34 +1,39 @@
 <!DOCTYPE html>
 <html lang="en" class="{{themeClass}}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake Game</title>
     {{commonCSS}}
     {{themeCSS}}
-    <style>
-        #gameCanvas {
-            background: #000;
-        }
-    </style>
+    {{gameCSS:snake}}
 </head>
-<body>
+
+<body class="snake-game">
     <div class="header">
         <button class="back-btn" onclick="backToSnakeMenu()">← Back</button>
         {{#showNewWindowBtn}}
         <button class="new-window-btn" onclick="openInNewWindow('snake')">🗗 New Window</button>
         {{/showNewWindowBtn}}
     </div>
-    <h1>🐍 Snake</h1>
-    <div class="score">Score: <span id="score">0</span></div>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
-    <div class="controls">
-        <button onclick="startSnakeGame()">Start Game</button>
-        <button onclick="resetSnakeGame()">Reset</button>
-    </div>
-    <div class="instructions">
-        <p>Use WASD or Arrow Keys to move</p>
-        <p>Eat the red food to grow and score points</p>
+
+    <div class="game-container">
+        <h1>🐍 Snake</h1>
+
+        <div class="score">Score: <span id="score">0</span></div>
+
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+        <div class="game-controls">
+            <button class="btn-primary" onclick="startSnakeGame()">Start Game</button>
+            <button class="btn-secondary" onclick="resetSnakeGame()">Reset</button>
+        </div>
+
+        <div class="instructions">
+            <p>Use WASD or Arrow Keys to move</p>
+            <p>Eat the red food to grow and score points</p>
+        </div>
     </div>
 
     <script>
@@ -39,7 +44,7 @@
                 game: game
             });
         }
-        
+
         function backToSnakeMenu() {
             vscode.postMessage({
                 type: 'backToMenu'
@@ -49,4 +54,5 @@
     </script>
     <script src="{{gameScript:snake}}"></script>
 </body>
+
 </html>

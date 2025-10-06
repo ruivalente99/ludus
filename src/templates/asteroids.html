@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" class="{{themeClass}}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asteroids</title>
     {{commonCSS}}
     {{themeCSS}}
-    <style>
-        #gameCanvas {
-            background: #000;
-        }
-    </style>
+    {{gameCSS:asteroids}}
 </head>
-<body>
+
+<body class="asteroids-game">
     <div class="header">
         <button class="back-btn" onclick="backToAsteroidsMenu()">← Back</button>
         {{#showNewWindowBtn}}
@@ -26,9 +24,9 @@
         <div class="stat">Level: <span id="level">1</span></div>
     </div>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
-    <div class="controls">
-        <button onclick="startAsteroidsGame()">New Game</button>
-        <button onclick="resetAsteroidsGame()">Reset</button>
+    <div class="game-controls">
+        <button class="btn-primary" onclick="startAsteroidsGame()">New Game</button>
+        <button class="btn-secondary" onclick="resetAsteroidsGame()">Reset</button>
     </div>
     <div class="instructions">
         <p>Use WASD to move and rotate • SPACE to shoot</p>
@@ -43,7 +41,7 @@
                 game: game
             });
         }
-        
+
         function backToAsteroidsMenu() {
             vscode.postMessage({
                 type: 'backToMenu'
@@ -53,4 +51,5 @@
     </script>
     <script src="{{gameScript:asteroids}}"></script>
 </body>
+
 </html>

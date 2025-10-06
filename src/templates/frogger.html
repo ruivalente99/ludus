@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" class="{{themeClass}}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Road Crosser</title>
     {{commonCSS}}
     {{themeCSS}}
-    <style>
-        #gameCanvas {
-            background: linear-gradient(to bottom, #87CEEB, #90EE90, #8FBC8F);
-        }
-    </style>
+    {{gameCSS:frogger}}
 </head>
-<body>
+
+<body class="frogger-game">
     <div class="header">
         <button class="back-btn" onclick="backToFroggerMenu()">← Back</button>
         {{#showNewWindowBtn}}
@@ -43,7 +41,7 @@
                 game: game
             });
         }
-        
+
         function backToFroggerMenu() {
             vscode.postMessage({
                 type: 'backToMenu'
@@ -53,4 +51,5 @@
     </script>
     <script src="{{gameScript:frogger}}"></script>
 </body>
+
 </html>

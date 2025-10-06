@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" class="{{themeClass}}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space Invaders</title>
     {{commonCSS}}
     {{themeCSS}}
-    <style>
-        #gameCanvas {
-            background: #000;
-        }
-    </style>
+    {{gameCSS:spaceInvaders}}
 </head>
-<body>
+
+<body class="space-invaders-game">
     <div class="header">
         <button class="back-btn" onclick="backToSpaceInvadersMenu()">← Back</button>
         {{#showNewWindowBtn}}
@@ -42,7 +40,7 @@
                 game: game
             });
         }
-        
+
         function backToSpaceInvadersMenu() {
             vscode.postMessage({
                 type: 'backToMenu'
@@ -52,4 +50,5 @@
     </script>
     <script src="{{gameScript:spaceInvaders}}"></script>
 </body>
+
 </html>

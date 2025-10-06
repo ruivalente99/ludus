@@ -1,38 +1,38 @@
 <!DOCTYPE html>
 <html lang="en" class="{{themeClass}}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minesweeper</title>
     {{commonCSS}}
     {{themeCSS}}
-        <style>
-        #gameCanvas {
-            border: 1px solid var(--vscode-input-border);
-            border-radius: 4px;
-            margin: 16px auto;
-            display: block;
-            background: var(--vscode-input-background);
-        }
-    </style>
+    {{gameCSS:minesweeper}}
 </head>
-<body>
+
+<body class="minesweeper-game">
     <div class="header">
         <button class="back-btn" onclick="backToMinesweeperMenu()">← Back</button>
         {{#showNewWindowBtn}}
         <button class="new-window-btn" onclick="openInNewWindow('minesweeper')">🗗 New Window</button>
         {{/showNewWindowBtn}}
     </div>
-    <h1>💣 Minesweeper</h1>
-    <div class="stats">
-        <div class="stat">Remaining: <span id="mineCount">10</span></div>
-        <div class="stat">Flagged: <span id="flagged">0</span></div>
-        <div class="stat">Time: <span id="time">00:00</span></div>
-    </div>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
-    <div class="controls">
-        <button onclick="startMinesweeperGame()">New Game</button>
-        <button onclick="resetMinesweeperGame()">Reset</button>
+
+    <div class="game-container">
+        <h1>💣 Minesweeper</h1>
+
+        <div class="stats">
+            <div class="stat">Remaining: <span id="mineCount">10</span></div>
+            <div class="stat">Flagged: <span id="flagged">0</span></div>
+            <div class="stat">Time: <span id="time">00:00</span></div>
+        </div>
+
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+        <div class="game-controls">
+            <button class="btn-primary" onclick="startMinesweeperGame()">New Game</button>
+            <button class="btn-secondary" onclick="resetMinesweeperGame()">Reset</button>
+        </div>
     </div>
     <div class="instructions">
         <p>Left click to reveal • Right click to flag</p>
@@ -47,7 +47,7 @@
                 game: game
             });
         }
-        
+
         function backToMinesweeperMenu() {
             vscode.postMessage({
                 type: 'backToMenu'
@@ -57,4 +57,5 @@
     </script>
     <script src="{{gameScript:minesweeper}}"></script>
 </body>
+
 </html>

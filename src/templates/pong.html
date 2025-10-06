@@ -1,37 +1,42 @@
 <!DOCTYPE html>
 <html lang="en" class="{{themeClass}}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pong</title>
     {{commonCSS}}
     {{themeCSS}}
-    <style>
-        #gameCanvas {
-            background: #000;
-        }
-    </style>
+    {{gameCSS:pong}}
 </head>
-<body>
+
+<body class="pong-game">
     <div class="header">
         <button class="back-btn" onclick="backToPongMenu()">← Back</button>
         {{#showNewWindowBtn}}
         <button class="new-window-btn" onclick="openInNewWindow('pong')">🗗 New Window</button>
         {{/showNewWindowBtn}}
     </div>
-    <h1>🏓 Pong</h1>
-    <div class="stats">
-        <div class="stat">You: <span id="playerScore">0</span></div>
-        <div class="stat">AI: <span id="aiScore">0</span></div>
-    </div>
-    <canvas id="gameCanvas" width="400" height="300"></canvas>
-    <div class="controls">
-        <button onclick="startPongGame()">New Game</button>
-        <button onclick="resetPongGame()">Reset</button>
-    </div>
-    <div class="instructions">
-        <p>Use W/S or Arrow Keys to move your paddle</p>
-        <p>First to 5 points wins!</p>
+
+    <div class="game-container">
+        <h1>🏓 Pong</h1>
+
+        <div class="stats">
+            <div class="stat">You: <span id="playerScore">0</span></div>
+            <div class="stat">AI: <span id="aiScore">0</span></div>
+        </div>
+
+        <canvas id="gameCanvas" width="400" height="300"></canvas>
+
+        <div class="game-controls">
+            <button class="btn-primary" onclick="startPongGame()">New Game</button>
+            <button class="btn-secondary" onclick="resetPongGame()">Reset</button>
+        </div>
+
+        <div class="instructions">
+            <p>Use W/S or Arrow Keys to move your paddle</p>
+            <p>First to 5 points wins!</p>
+        </div>
     </div>
 
     <script>
@@ -42,7 +47,7 @@
                 game: game
             });
         }
-        
+
         function backToPongMenu() {
             vscode.postMessage({
                 type: 'backToMenu'
@@ -52,4 +57,5 @@
     </script>
     <script src="{{gameScript:pong}}"></script>
 </body>
+
 </html>
