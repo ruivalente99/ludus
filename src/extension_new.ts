@@ -23,6 +23,14 @@ export class GameProvider implements vscode.WebviewViewProvider {
         this._updateView();
     }
 
+    public clearFavorites(): void {
+        if (this._view) {
+            this._view.webview.postMessage({
+                type: 'clearFavorites'
+            });
+        }
+    }
+
     public resolveWebviewView(
         webviewView: vscode.WebviewView,
         context: vscode.WebviewViewResolveContext,
@@ -204,8 +212,8 @@ export function activate(context: vscode.ExtensionContext) {
         );
 
         if (confirm === 'Clear Favorites') {
-            const config = vscode.workspace.getConfiguration('ludus');
-            await config.update('favorites', [], vscode.ConfigurationTarget.Global);
+            // Send message to webview to clear localStorage favorites
+            provider.clearFavorites();
             vscode.window.showInformationMessage('All favorite games have been cleared!');
         }
     });
