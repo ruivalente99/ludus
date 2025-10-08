@@ -499,10 +499,10 @@ class FroggerGame {
         this.ctx.fillStyle = this.colors.road;
         this.ctx.fillRect(0, 160, CANVAS_WIDTH, 180);
 
-        // Draw road lines
+        // Draw road lines (simplified)
         this.ctx.strokeStyle = this.colors.roadLine;
-        this.ctx.lineWidth = 2;
-        this.ctx.setLineDash([15, 10]);
+        this.ctx.lineWidth = 1;
+        this.ctx.setLineDash([10, 10]);
         for (let y = 180; y < 340; y += 40) {
             this.ctx.beginPath();
             this.ctx.moveTo(0, y);
@@ -515,30 +515,9 @@ class FroggerGame {
         this.ctx.fillStyle = this.colors.water;
         this.ctx.fillRect(0, 20, CANVAS_WIDTH, 120);
 
-        // Draw water waves effect
-        const waveColor = this.hexToRgba(this.colors.wave, 0.2);
-        this.ctx.strokeStyle = waveColor;
-        this.ctx.lineWidth = 1;
-        for (let y = 30; y < 130; y += 20) {
-            this.ctx.beginPath();
-            for (let x = 0; x < CANVAS_WIDTH; x += 10) {
-                const waveY = y + Math.sin((x + Date.now() / 200) / 10) * 2;
-                if (x === 0) {
-                    this.ctx.moveTo(x, waveY);
-                } else {
-                    this.ctx.lineTo(x, waveY);
-                }
-            }
-            this.ctx.stroke();
-        }
-
-        // Draw goal zone
+        // Draw goal zone (simplified - just a line)
         this.ctx.fillStyle = this.colors.goal;
         this.ctx.fillRect(0, 0, CANVAS_WIDTH, 20);
-        this.ctx.fillStyle = this.colors.goalText;
-        this.ctx.font = 'bold 12px Arial';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText('★ GOAL ★', CANVAS_WIDTH / 2, 14);
 
         // Draw vehicles
         for (const vehicle of this.state.vehicles) {
@@ -555,23 +534,23 @@ class FroggerGame {
 
         // Draw game over overlay
         if (this.state.gameOver) {
-            const overlayColor = this.hexToRgba(this.colors.overlay, 0.85);
+            const overlayColor = this.hexToRgba(this.colors.overlay, 0.75);
             this.ctx.fillStyle = overlayColor;
             this.ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
             this.ctx.fillStyle = this.colors.gameOverText;
-            this.ctx.font = 'bold 32px Arial';
+            this.ctx.font = 'bold 28px Arial';
             this.ctx.textAlign = 'center';
-            this.ctx.fillText('GAME OVER', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 20);
+            this.ctx.fillText('GAME OVER', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 15);
 
             this.ctx.fillStyle = this.colors.whiteText;
-            this.ctx.font = '18px Arial';
+            this.ctx.font = '16px Arial';
             this.ctx.fillText(`Score: ${this.state.score}`, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 20);
             
             if (this.state.score === this.state.highScore && this.state.score > 0) {
                 this.ctx.fillStyle = this.colors.goldText;
-                this.ctx.font = 'bold 16px Arial';
-                this.ctx.fillText('★ NEW HIGH SCORE! ★', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 50);
+                this.ctx.font = '14px Arial';
+                this.ctx.fillText('NEW HIGH SCORE', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 45);
             }
         }
     }
@@ -602,42 +581,15 @@ class FroggerGame {
     }
 
     private drawVehicle(vehicle: Vehicle): void {
+        // Simple solid rectangle for vehicle
         this.ctx.fillStyle = vehicle.color;
         this.ctx.fillRect(vehicle.x, vehicle.y, vehicle.width, vehicle.height);
-        
-        // Add vehicle details
-        const borderColor = this.hexToRgba(this.colors.border, 0.5);
-        this.ctx.strokeStyle = borderColor;
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(vehicle.x, vehicle.y, vehicle.width, vehicle.height);
-        
-        // Windows
-        const windowColor = this.hexToRgba(this.colors.vehicleWindow, 0.6);
-        this.ctx.fillStyle = windowColor;
-        if (vehicle.type === 'truck') {
-            this.ctx.fillRect(vehicle.x + 5, vehicle.y + 4, 12, 12);
-            this.ctx.fillRect(vehicle.x + vehicle.width - 17, vehicle.y + 4, 12, 12);
-        } else {
-            this.ctx.fillRect(vehicle.x + vehicle.width / 2 - 6, vehicle.y + 4, 12, 12);
-        }
     }
 
     private drawLog(log: Log): void {
+        // Simple solid rectangle for log
         this.ctx.fillStyle = this.colors.log;
         this.ctx.fillRect(log.x, log.y, log.width, log.height);
-        
-        // Log texture
-        this.ctx.strokeStyle = this.colors.logBorder;
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(log.x, log.y, log.width, log.height);
-        
-        // Wood rings
-        for (let i = 1; i < 4; i++) {
-            const ringX = log.x + (log.width / 4) * i;
-            this.ctx.beginPath();
-            this.ctx.ellipse(ringX, log.y + log.height / 2, 4, 6, 0, 0, Math.PI * 2);
-            this.ctx.stroke();
-        }
     }
 
     private drawFrog(player: FroggerPlayer): void {
@@ -650,24 +602,9 @@ class FroggerGame {
         this.ctx.rotate((player.rotation * Math.PI) / 180);
         this.ctx.translate(-centerX, -centerY);
         
-        // Draw frog body
+        // Simple solid rectangle for frog
         this.ctx.fillStyle = this.colors.frog;
         this.ctx.fillRect(player.x, player.y, player.width, player.height);
-        
-        // Draw frog outline
-        this.ctx.strokeStyle = this.colors.frogDark;
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(player.x, player.y, player.width, player.height);
-        
-        // Draw eyes (white)
-        this.ctx.fillStyle = this.colors.whiteText;
-        this.ctx.fillRect(player.x + 3, player.y + 2, 5, 5);
-        this.ctx.fillRect(player.x + 12, player.y + 2, 5, 5);
-        
-        // Draw pupils (use overlay for black)
-        this.ctx.fillStyle = this.colors.overlay;
-        this.ctx.fillRect(player.x + 5, player.y + 3, 2, 3);
-        this.ctx.fillRect(player.x + 14, player.y + 3, 2, 3);
         
         this.ctx.restore();
     }
