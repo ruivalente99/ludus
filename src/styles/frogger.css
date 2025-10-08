@@ -1,121 +1,131 @@
-/* Road Crosser (Frogger) game styles - Modern Clean Design */
+/* Road Crosser (Frogger) game styles */
 
 .frogger-game {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 20px;
-	max-width: 600px;
-	margin: 0 auto;
-	font-family: var(--vscode-font-family);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .frogger-game .header {
-	position: relative;
-	width: 100%;
-	max-width: 600px;
+    position: relative;
+    width: 100%;
+    max-width: 600px;
 }
 
-.frogger-game #gameCanvas {
-	background: linear-gradient(180deg, 
-		var(--vscode-terminal-background) 0%, 
-		var(--vscode-sideBar-background) 30%,
-		var(--vscode-input-background) 70%,
-		var(--vscode-sideBar-background) 100%);
-	border: 3px solid var(--vscode-panel-border);
-	border-radius: 12px;
-	margin: 20px auto;
-	display: block;
-	box-shadow: 
-		0 8px 24px rgba(0, 0, 0, 0.15),
-		inset 0 1px 0 rgba(255, 255, 255, 0.1);
-	position: relative;
-	overflow: hidden;
+.frogger-game .game-container {
+    width: 100%;
 }
 
-.frogger-game #gameCanvas::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: linear-gradient(90deg, 
-		transparent 0%, 
-		rgba(255, 255, 255, 0.03) 50%, 
-		transparent 100%);
-	pointer-events: none;
+.frogger-game h1 {
+    text-align: center;
+    margin: 20px 0 24px 0;
+    font-size: 28px;
+    font-weight: 600;
 }
 
+/* Stats section */
 .frogger-game .stats {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-	gap: 16px;
-	margin: 20px 0;
-	width: 100%;
-	max-width: 450px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 0 auto 24px auto;
+    max-width: 450px;
 }
 
-.frogger-game .stat {
-	background: linear-gradient(135deg, 
-		var(--vscode-sideBar-background) 0%, 
-		var(--vscode-input-background) 100%);
-	border: 1px solid var(--vscode-panel-border);
-	border-radius: 10px;
-	padding: 16px 20px;
-	font-weight: 600;
-	text-align: center;
-	font-size: 14px;
-	color: var(--vscode-foreground);
-	box-shadow: 
-		0 4px 12px rgba(0, 0, 0, 0.1),
-		inset 0 1px 0 rgba(255, 255, 255, 0.1);
-	transition: all 0.2s ease;
-	position: relative;
-	overflow: hidden;
+.frogger-game .stat-item {
+    background: var(--vscode-sideBar-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    transition: all 0.2s ease;
 }
 
-.frogger-game .stat::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: -100%;
-	width: 100%;
-	height: 100%;
-	background: linear-gradient(90deg, 
-		transparent 0%, 
-		rgba(255, 255, 255, 0.1) 50%, 
-		transparent 100%);
-	transition: left 0.6s ease;
+.frogger-game .stat-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.frogger-game .stat:hover::before {
-	left: 100%;
+.frogger-game .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 6px;
+    font-weight: 500;
 }
 
-.frogger-game .stat:hover {
-	transform: translateY(-2px);
-	box-shadow: 
-		0 6px 16px rgba(0, 0, 0, 0.15),
-		inset 0 1px 0 rgba(255, 255, 255, 0.2);
+.frogger-game .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--vscode-charts-blue);
 }
 
-.frogger-game .stat strong {
-	display: block;
-	font-size: 20px;
-	color: var(--vscode-focusBorder);
-	margin-top: 4px;
-	font-weight: 700;
-	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+/* Game canvas */
+.frogger-game #gameCanvas {
+    display: block;
+    margin: 0 auto 20px auto;
+    border: 2px solid var(--vscode-panel-border);
+    border-radius: 8px;
+    background: var(--vscode-editor-background);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Controls */
+.frogger-game .controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+/* Instructions */
 .frogger-game .instructions {
     text-align: center;
     margin-top: 20px;
-    color: var(--vscode-descriptionForeground);
-    font-size: 13px;
+    padding: 16px;
+    background: var(--vscode-sideBar-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 8px;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .frogger-game .instructions p {
-    margin: 4px 0;
+    margin: 6px 0;
+    font-size: 13px;
+    color: var(--vscode-descriptionForeground);
+    line-height: 1.5;
+}
+
+.frogger-game .instructions p:first-child {
+    font-weight: 500;
+    color: var(--vscode-foreground);
+}
+
+/* Responsive design */
+@media (max-width: 500px) {
+    .frogger-game .stats {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .frogger-game #gameCanvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .frogger-game .controls {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .frogger-game .controls button {
+        width: 100%;
+    }
 }

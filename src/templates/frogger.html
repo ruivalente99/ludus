@@ -17,20 +17,36 @@
         <button class="new-window-btn" onclick="openInNewWindow('frogger')">🗗 New Window</button>
         {{/showNewWindowBtn}}
     </div>
-    <h1>🐸 Road Crosser</h1>
-    <div class="stats">
-        <div class="stat">Score: <span id="score">0</span></div>
-        <div class="stat">Lives: <span id="lives">3</span></div>
-        <div class="stat">Level: <span id="level">1</span></div>
-    </div>
-    <canvas id="gameCanvas" width="400" height="500"></canvas>
-    <div class="controls">
-        <button onclick="startFroggerGame()">New Game</button>
-        <button onclick="resetFroggerGame()">Reset</button>
-    </div>
-    <div class="instructions">
-        <p>Use WASD or Arrow Keys to move</p>
-        <p>Help the frog cross safely without getting hit</p>
+
+    <div class="game-container">
+        <h1>🐸 Road Crosser</h1>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-label">Score</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Lives</div>
+                <div class="stat-value" id="lives">3</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Level</div>
+                <div class="stat-value" id="level">1</div>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas" width="400" height="500"></canvas>
+
+        <div class="controls">
+            <button class="btn-primary" onclick="startFroggerGame()">New Game</button>
+            <button class="btn-secondary" onclick="resetFroggerGame()">Reset</button>
+        </div>
+
+        <div class="instructions">
+            <p>Use WASD or Arrow Keys to move the frog</p>
+            <p>Avoid cars and reach the other side safely!</p>
+        </div>
     </div>
 
     <script>
