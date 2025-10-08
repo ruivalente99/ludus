@@ -22,7 +22,8 @@
         <h1>⭕ Tic Tac Toe</h1>
 
         <div class="game-mode">
-            <button class="btn-secondary mode-btn active" id="pvpBtn" onclick="setGameMode('pvp')">Player vs Player</button>
+            <button class="btn-secondary mode-btn active" id="pvpBtn" onclick="setGameMode('pvp')">Player vs
+                Player</button>
             <button class="btn-secondary mode-btn" id="pvcBtn" onclick="setGameMode('pvc')">Player vs Computer</button>
         </div>
 
@@ -170,7 +171,7 @@
                 const winner = gameMode === 'pvc' && currentPlayer === 'O' ? 'Computer' : `Player ${currentPlayer}`;
                 document.getElementById('status').textContent = `${winner} wins! 🎉`;
                 document.getElementById('status').classList.add('winner');
-                
+
                 gameStats[currentPlayer === 'X' ? 'xWins' : 'oWins']++;
                 saveStats();
                 updateStats();
@@ -182,7 +183,7 @@
                 gameActive = false;
                 document.getElementById('status').textContent = "It's a draw! 🤝";
                 document.getElementById('status').classList.add('draw');
-                
+
                 gameStats.draws++;
                 saveStats();
                 updateStats();
