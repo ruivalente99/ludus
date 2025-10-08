@@ -168,7 +168,7 @@
         }
 
         function openSettings() {
-            const message = { command: 'openSettings' };
+            const message = { type: 'openSettings' };
 
             if (typeof acquireVsCodeApi !== 'undefined') {
                 const vscode = acquireVsCodeApi();

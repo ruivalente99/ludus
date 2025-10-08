@@ -64,6 +64,9 @@ export class GameProvider implements vscode.WebviewViewProvider {
                 case 'openInNewWindow':
                     this._openGameInNewWindow(data.game);
                     break;
+                case 'openSettings':
+                    vscode.commands.executeCommand('workbench.action.openSettings', 'ludus');
+                    break;
                 case 'toggleFavorite':
                     const isFavorited = await toggleFavoriteConfig(data.gameId);
                     webviewView.webview.postMessage({
