@@ -5,21 +5,42 @@ const CANVAS_HEIGHT = 400;
 const MOVE_DURATION = 100;
 const PLAYER_SIZE = 20;
 
-// Color Schemes
-const COLORS = {
-    grass: '#2d5016',
-    safeZone: '#5cb85c',
-    road: '#3a3a3a',
-    roadLine: '#ffd700',
-    water: '#1e90ff',
-    goal: '#ffd700',
-    goalText: '#ff4500',
-    log: '#8b4513',
-    logBorder: '#654321',
-    frog: '#7cfc00',
-    frogDark: '#228b22',
-    vehicles: ['#ff4444', '#44ff44', '#4444ff', '#ffff44', '#ff44ff', '#44ffff']
-};
+// Helper function to get VS Code theme colors
+function getVSCodeColor(cssVar: string, fallback: string): string {
+    return getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim() || fallback;
+}
+
+// Dynamic color getter
+function getGameColors() {
+    return {
+        grass: getVSCodeColor('--vscode-terminal-ansiGreen', '#2d5016'),
+        safeZone: getVSCodeColor('--vscode-charts-green', '#5cb85c'),
+        road: getVSCodeColor('--vscode-editor-background', '#3a3a3a'),
+        roadLine: getVSCodeColor('--vscode-charts-yellow', '#ffd700'),
+        water: getVSCodeColor('--vscode-charts-blue', '#1e90ff'),
+        goal: getVSCodeColor('--vscode-charts-yellow', '#ffd700'),
+        goalText: getVSCodeColor('--vscode-charts-orange', '#ff4500'),
+        log: getVSCodeColor('--vscode-terminal-ansiBrightYellow', '#8b4513'),
+        logBorder: getVSCodeColor('--vscode-terminal-ansiYellow', '#654321'),
+        frog: getVSCodeColor('--vscode-terminal-ansiBrightGreen', '#7cfc00'),
+        frogDark: getVSCodeColor('--vscode-terminal-ansiGreen', '#228b22'),
+        vehicles: [
+            getVSCodeColor('--vscode-charts-red', '#ff4444'),
+            getVSCodeColor('--vscode-charts-green', '#44ff44'),
+            getVSCodeColor('--vscode-charts-blue', '#4444ff'),
+            getVSCodeColor('--vscode-charts-yellow', '#ffff44'),
+            getVSCodeColor('--vscode-charts-purple', '#ff44ff'),
+            getVSCodeColor('--vscode-terminal-ansiCyan', '#44ffff')
+        ],
+        overlay: getVSCodeColor('--vscode-editor-background', '#000000'),
+        gameOverText: getVSCodeColor('--vscode-charts-red', '#ff4444'),
+        whiteText: getVSCodeColor('--vscode-foreground', '#ffffff'),
+        goldText: getVSCodeColor('--vscode-charts-yellow', '#ffd700'),
+        vehicleWindow: getVSCodeColor('--vscode-charts-blue', '#64b4ff'),
+        border: getVSCodeColor('--vscode-panel-border', '#454545'),
+        wave: getVSCodeColor('--vscode-foreground', '#ffffff')
+    };
+}
 
 // Interfaces
 interface Position {
@@ -71,11 +92,15 @@ class FroggerGame {
     private moveStartTime: number = 0;
     private moveStartPos: Position = { x: 0, y: 0 };
     private moveTargetPos: Position = { x: 0, y: 0 };
+    private colors: ReturnType<typeof getGameColors>;
 
     constructor() {
         this.vscode = (window as any).vscode || (window as any).acquireVsCodeApi();
         this.canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d')!;
+        
+        // Get VS Code theme colors
+        this.colors = getGameColors();
 
         // Load high score from localStorage
         const savedHighScore = localStorage.getItem('froggerHighScore');
@@ -200,7 +225,7 @@ class FroggerGame {
                     width: vehicleWidth,
                     height: 20,
                     speed: speed,
-                    color: COLORS.vehicles[index % COLORS.vehicles.length],
+                    color: this.colors.vehicles[index % this.colors.vehicles.length],
                     type: isLarge ? 'truck' : 'car'
                 });
             }
@@ -459,23 +484,23 @@ class FroggerGame {
 
     private draw(): void {
         // Clear canvas with grass background
-        this.ctx.fillStyle = COLORS.grass;
+        this.ctx.fillStyle = this.colors.grass;
         this.ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
         // Draw safe zone (bottom)
-        this.ctx.fillStyle = COLORS.safeZone;
+        this.ctx.fillStyle = this.colors.safeZone;
         this.ctx.fillRect(0, 360, CANVAS_WIDTH, 40);
 
         // Draw safe zone (middle)
-        this.ctx.fillStyle = COLORS.safeZone;
+        this.ctx.fillStyle = this.colors.safeZone;
         this.ctx.fillRect(0, 140, CANVAS_WIDTH, 20);
 
         // Draw road
-        this.ctx.fillStyle = COLORS.road;
+        this.ctx.fillStyle = this.colors.road;
         this.ctx.fillRect(0, 160, CANVAS_WIDTH, 180);
 
         // Draw road lines
-        this.ctx.strokeStyle = COLORS.roadLine;
+        this.ctx.strokeStyle = this.colors.roadLine;
         this.ctx.lineWidth = 2;
         this.ctx.setLineDash([15, 10]);
         for (let y = 180; y < 340; y += 40) {
@@ -487,11 +512,12 @@ class FroggerGame {
         this.ctx.setLineDash([]);
 
         // Draw water
-        this.ctx.fillStyle = COLORS.water;
+        this.ctx.fillStyle = this.colors.water;
         this.ctx.fillRect(0, 20, CANVAS_WIDTH, 120);
 
         // Draw water waves effect
-        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        const waveColor = this.hexToRgba(this.colors.wave, 0.2);
+        this.ctx.strokeStyle = waveColor;
         this.ctx.lineWidth = 1;
         for (let y = 30; y < 130; y += 20) {
             this.ctx.beginPath();
@@ -507,9 +533,9 @@ class FroggerGame {
         }
 
         // Draw goal zone
-        this.ctx.fillStyle = COLORS.goal;
+        this.ctx.fillStyle = this.colors.goal;
         this.ctx.fillRect(0, 0, CANVAS_WIDTH, 20);
-        this.ctx.fillStyle = COLORS.goalText;
+        this.ctx.fillStyle = this.colors.goalText;
         this.ctx.font = 'bold 12px Arial';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('★ GOAL ★', CANVAS_WIDTH / 2, 14);
@@ -529,24 +555,50 @@ class FroggerGame {
 
         // Draw game over overlay
         if (this.state.gameOver) {
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+            const overlayColor = this.hexToRgba(this.colors.overlay, 0.85);
+            this.ctx.fillStyle = overlayColor;
             this.ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-            this.ctx.fillStyle = '#ff4444';
+            this.ctx.fillStyle = this.colors.gameOverText;
             this.ctx.font = 'bold 32px Arial';
             this.ctx.textAlign = 'center';
             this.ctx.fillText('GAME OVER', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 20);
 
-            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillStyle = this.colors.whiteText;
             this.ctx.font = '18px Arial';
             this.ctx.fillText(`Score: ${this.state.score}`, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 20);
             
             if (this.state.score === this.state.highScore && this.state.score > 0) {
-                this.ctx.fillStyle = '#ffd700';
+                this.ctx.fillStyle = this.colors.goldText;
                 this.ctx.font = 'bold 16px Arial';
                 this.ctx.fillText('★ NEW HIGH SCORE! ★', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 50);
             }
         }
+    }
+
+    private hexToRgba(hex: string, alpha: number): string {
+        // Handle both RGB and RGBA inputs
+        if (hex.startsWith('rgb')) {
+            // If already rgb/rgba, extract RGB values and apply new alpha
+            const match = hex.match(/\d+/g);
+            if (match && match.length >= 3) {
+                return `rgba(${match[0]}, ${match[1]}, ${match[2]}, ${alpha})`;
+            }
+        }
+        
+        // Remove # if present
+        hex = hex.replace('#', '');
+        
+        // Handle 3-digit hex codes
+        if (hex.length === 3) {
+            hex = hex.split('').map(c => c + c).join('');
+        }
+        
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
 
     private drawVehicle(vehicle: Vehicle): void {
@@ -554,12 +606,14 @@ class FroggerGame {
         this.ctx.fillRect(vehicle.x, vehicle.y, vehicle.width, vehicle.height);
         
         // Add vehicle details
-        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+        const borderColor = this.hexToRgba(this.colors.border, 0.5);
+        this.ctx.strokeStyle = borderColor;
         this.ctx.lineWidth = 2;
         this.ctx.strokeRect(vehicle.x, vehicle.y, vehicle.width, vehicle.height);
         
         // Windows
-        this.ctx.fillStyle = 'rgba(100, 180, 255, 0.6)';
+        const windowColor = this.hexToRgba(this.colors.vehicleWindow, 0.6);
+        this.ctx.fillStyle = windowColor;
         if (vehicle.type === 'truck') {
             this.ctx.fillRect(vehicle.x + 5, vehicle.y + 4, 12, 12);
             this.ctx.fillRect(vehicle.x + vehicle.width - 17, vehicle.y + 4, 12, 12);
@@ -569,11 +623,11 @@ class FroggerGame {
     }
 
     private drawLog(log: Log): void {
-        this.ctx.fillStyle = COLORS.log;
+        this.ctx.fillStyle = this.colors.log;
         this.ctx.fillRect(log.x, log.y, log.width, log.height);
         
         // Log texture
-        this.ctx.strokeStyle = COLORS.logBorder;
+        this.ctx.strokeStyle = this.colors.logBorder;
         this.ctx.lineWidth = 2;
         this.ctx.strokeRect(log.x, log.y, log.width, log.height);
         
@@ -597,21 +651,21 @@ class FroggerGame {
         this.ctx.translate(-centerX, -centerY);
         
         // Draw frog body
-        this.ctx.fillStyle = COLORS.frog;
+        this.ctx.fillStyle = this.colors.frog;
         this.ctx.fillRect(player.x, player.y, player.width, player.height);
         
         // Draw frog outline
-        this.ctx.strokeStyle = COLORS.frogDark;
+        this.ctx.strokeStyle = this.colors.frogDark;
         this.ctx.lineWidth = 2;
         this.ctx.strokeRect(player.x, player.y, player.width, player.height);
         
-        // Draw eyes
-        this.ctx.fillStyle = '#ffffff';
+        // Draw eyes (white)
+        this.ctx.fillStyle = this.colors.whiteText;
         this.ctx.fillRect(player.x + 3, player.y + 2, 5, 5);
         this.ctx.fillRect(player.x + 12, player.y + 2, 5, 5);
         
-        // Draw pupils
-        this.ctx.fillStyle = '#000000';
+        // Draw pupils (use overlay for black)
+        this.ctx.fillStyle = this.colors.overlay;
         this.ctx.fillRect(player.x + 5, player.y + 3, 2, 3);
         this.ctx.fillRect(player.x + 14, player.y + 3, 2, 3);
         
